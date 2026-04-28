@@ -62,8 +62,14 @@ function Invoke-WithRetry {
             Start-Sleep -Seconds $delay
         }
 
-        $output = & $Command 2>&1 | Out-String
-        $lastExit = if ($LASTEXITCODE -ne $null) { $LASTEXITCODE } else { 0 }
+        $previousErrorActionPreference = $ErrorActionPreference
+        $ErrorActionPreference = "Continue"
+        try {
+            $output = & $Command 2>&1 | Out-String
+            $lastExit = if ($LASTEXITCODE -ne $null) { $LASTEXITCODE } else { 0 }
+        } finally {
+            $ErrorActionPreference = $previousErrorActionPreference
+        }
 
         if ($lastExit -eq 0) {
             if ($output.Trim().Length -gt 0) {
