@@ -209,8 +209,8 @@ function Publish-Reports {
         if ($LASTEXITCODE -ne 0) { throw "git init failed" }
     }
 
-    & $gitBin "--git-dir=$gitDir" remote remove origin *> $null
-    Invoke-Git "--git-dir=$gitDir" remote add origin $remoteUrl
+    Invoke-Git "--git-dir=$gitDir" config remote.origin.url $remoteUrl
+    Invoke-Git "--git-dir=$gitDir" config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
     if ($LASTEXITCODE -ne 0) { throw "git remote setup failed" }
 
     Invoke-Git "--git-dir=$gitDir" config user.name *> $null
