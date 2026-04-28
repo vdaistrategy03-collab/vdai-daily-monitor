@@ -18,6 +18,8 @@ $branch = if ($env:BRANCH) { $env:BRANCH } else { "main" }
 $authFile = if ($env:GITHUB_AUTH_FILE) { $env:GITHUB_AUTH_FILE } else { Join-Path $repoRoot ".github-auth.local" }
 $gitBin = if ($env:GIT_BIN) { $env:GIT_BIN } elseif (Test-Path "C:\Program Files\Git\cmd\git.exe") { "C:\Program Files\Git\cmd\git.exe" } else { "git" }
 $tempRoot = [System.IO.Path]::GetTempPath()
+$codexMaxAttempts = if ($env:CODEX_MAX_ATTEMPTS) { [int]$env:CODEX_MAX_ATTEMPTS } else { 3 }
+$codexTimeoutMinutes = if ($env:CODEX_TIMEOUT_MINUTES) { [int]$env:CODEX_TIMEOUT_MINUTES } else { 45 }
 
 New-Item -ItemType Directory -Force -Path $logDir | Out-Null
 $timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
@@ -44,6 +46,10 @@ function Test-TransientNetworkError {
         $text.Contains("connection reset") -or
         $text.Contains("empty reply from server") -or
         $text.Contains("the remote end hung up unexpectedly") -or
+        $text.Contains("remote helper 'https' aborted session") -or
+        $text.Contains("stream disconnected") -or
+        $text.Contains("reconnecting") -or
+        $text.Contains("thread") -and $text.Contains("not found") -or
         $text.Contains("http 5")
 }
 
@@ -53,7 +59,7 @@ function Invoke-WithRetry {
         [scriptblock]$Command
     )
 
-    $delays = @(0, 5, 15, 45, 90)
+    $delays = @(0, 10, 30, 60, 120, 240, 300)
     $attempt = 1
     $lastExit = 0
 
@@ -156,7 +162,10 @@ function ConvertTo-CommandLineArg {
 }
 
 function Invoke-CodexExec {
-    param([string]$Prompt)
+    param(
+        [string]$Prompt,
+        [int]$Attempt = 1
+    )
 
     $arguments = @(
         "--search",
@@ -166,7 +175,7 @@ function Invoke-CodexExec {
         "-C", $repoRoot,
         "-m", $model,
         "--color", "never",
-        "-o", $lastMessage,
+        "-o", (Join-Path $logDir "last_message_${timestamp}_attempt_${Attempt}.txt"),
         "-"
     )
 
@@ -191,7 +200,15 @@ function Invoke-CodexExec {
     $process.StandardInput.BaseStream.Write($promptBytes, 0, $promptBytes.Length)
     $process.StandardInput.BaseStream.Flush()
     $process.StandardInput.Close()
-    $process.WaitForExit()
+    $timeoutMs = [int]([TimeSpan]::FromMinutes($codexTimeoutMinutes).TotalMilliseconds)
+    if (-not $process.WaitForExit($timeoutMs)) {
+        try {
+            $process.Kill()
+        } catch {
+        }
+        Write-RunLog ("[{0}] Codex attempt {1} timed out after {2} minutes." -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"), $Attempt, $codexTimeoutMinutes)
+        return 124
+    }
 
     $stdout = $stdoutTask.Result
     $stderr = $stderrTask.Result
@@ -203,6 +220,34 @@ function Invoke-CodexExec {
     }
 
     return $process.ExitCode
+}
+
+function Invoke-CodexExecWithRetry {
+    param([string]$Prompt)
+
+    $attempt = 1
+    $delays = @(0, 60, 180)
+    $lastStatus = 1
+
+    while ($attempt -le $codexMaxAttempts) {
+        $delay = if ($attempt -le $delays.Count) { $delays[$attempt - 1] } else { 300 }
+        if ($delay -gt 0) {
+            Write-RunLog ("[{0}] Waiting {1} seconds before Codex attempt {2}." -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"), $delay, $attempt)
+            Start-Sleep -Seconds $delay
+        }
+
+        Write-RunLog ("[{0}] Starting Codex attempt {1}/{2}." -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"), $attempt, $codexMaxAttempts)
+        $lastStatus = Invoke-CodexExec -Prompt $Prompt -Attempt $attempt
+        Write-RunLog ("[{0}] Codex attempt {1} finished with exit code {2}." -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"), $attempt, $lastStatus)
+
+        if ($lastStatus -eq 0) {
+            return 0
+        }
+
+        $attempt++
+    }
+
+    return $lastStatus
 }
 
 function Publish-Reports {
@@ -343,9 +388,11 @@ try {
     Write-RunLog "prompt_file=$promptFile"
     Write-RunLog "model=$model"
     Write-RunLog "sandbox=$codexSandbox"
+    Write-RunLog "codex_max_attempts=$codexMaxAttempts"
+    Write-RunLog "codex_timeout_minutes=$codexTimeoutMinutes"
 
     $prompt = Get-Content -Path $promptFile -Raw -Encoding UTF8
-    $cmdStatus = Invoke-CodexExec -Prompt $prompt
+    $cmdStatus = Invoke-CodexExecWithRetry -Prompt $prompt
 
     Write-RunLog ("[{0}] Finished with exit code {1}." -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"), $cmdStatus)
     if ($cmdStatus -ne 0) {
