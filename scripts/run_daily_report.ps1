@@ -42,6 +42,7 @@ function Test-TransientNetworkError {
         $text.Contains("operation timed out") -or
         $text.Contains("connection timed out") -or
         $text.Contains("connection reset") -or
+        $text.Contains("empty reply from server") -or
         $text.Contains("the remote end hung up unexpectedly") -or
         $text.Contains("http 5")
 }
@@ -211,6 +212,7 @@ function Publish-Reports {
 
     Invoke-Git "--git-dir=$gitDir" config remote.origin.url $remoteUrl
     Invoke-Git "--git-dir=$gitDir" config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+    Invoke-Git "--git-dir=$gitDir" config http.version HTTP/1.1
     if ($LASTEXITCODE -ne 0) { throw "git remote setup failed" }
 
     Invoke-Git "--git-dir=$gitDir" config user.name *> $null
