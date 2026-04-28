@@ -209,17 +209,8 @@ function Publish-Reports {
         if ($LASTEXITCODE -ne 0) { throw "git init failed" }
     }
 
-    $remoteExists = $false
-    & $gitBin "--git-dir=$gitDir" remote get-url origin *> $null
-    if ($LASTEXITCODE -eq 0) {
-        $remoteExists = $true
-    }
-
-    if ($remoteExists) {
-        Invoke-Git "--git-dir=$gitDir" remote set-url origin $remoteUrl
-    } else {
-        Invoke-Git "--git-dir=$gitDir" remote add origin $remoteUrl
-    }
+    & $gitBin "--git-dir=$gitDir" remote remove origin *> $null
+    Invoke-Git "--git-dir=$gitDir" remote add origin $remoteUrl
     if ($LASTEXITCODE -ne 0) { throw "git remote setup failed" }
 
     Invoke-Git "--git-dir=$gitDir" config user.name *> $null
