@@ -7,8 +7,28 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = Resolve-Path (Join-Path $scriptDir "..")
 $repoRoot = $repoRoot.Path
 
-$defaultCodexBin = Join-Path $env:USERPROFILE ".vscode\extensions\openai.chatgpt-26.422.30944-win32-x64\bin\windows-x86_64\codex.exe"
-$codexBin = if ($env:CODEX_BIN) { $env:CODEX_BIN } elseif (Test-Path $defaultCodexBin) { $defaultCodexBin } else { "codex" }
+function Resolve-CodexBinary {
+    if ($env:CODEX_BIN) {
+        return $env:CODEX_BIN
+    }
+
+    $extensionRoot = Join-Path $env:USERPROFILE ".vscode\extensions"
+    $extensionCodexBins = @()
+    if (Test-Path $extensionRoot) {
+        $extensionCodexBins = Get-ChildItem -Path $extensionRoot -Directory -Filter "openai.chatgpt-*-win32-x64" -ErrorAction SilentlyContinue |
+            ForEach-Object { Join-Path $_.FullName "bin\windows-x86_64\codex.exe" } |
+            Where-Object { Test-Path $_ } |
+            Sort-Object -Descending
+    }
+
+    if ($extensionCodexBins.Count -gt 0) {
+        return $extensionCodexBins[0]
+    }
+
+    return "codex"
+}
+
+$codexBin = Resolve-CodexBinary
 $promptFile = if ($env:CODEX_PROMPT_FILE) { $env:CODEX_PROMPT_FILE } else { Join-Path $repoRoot "docs\codex_cron_daily_tv_monitor.md" }
 $validateReportScript = Join-Path $repoRoot "scripts\validate_report_format.ps1"
 $model = if ($env:CODEX_MODEL) { $env:CODEX_MODEL } else { "gpt-5.4" }
@@ -412,6 +432,7 @@ try {
 
     Write-RunLog ("[{0}] Starting daily TV monitor run." -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"))
     Write-RunLog "repo_root=$repoRoot"
+    Write-RunLog "codex_bin=$codexBin"
     Write-RunLog "prompt_file=$promptFile"
     Write-RunLog "model=$model"
     Write-RunLog "sandbox=$codexSandbox"
