@@ -17,7 +17,7 @@
 1. **Google TV: 생성형 AI 제작 기능, Google Photos 검색/리믹스, 숏폼 홈 피드 추가 발표**
    - 상태: **공식 확인**
    - 발표 시점: 2026-04-29
-   - 분류: 플랫폼
+   - 분류: TV 플랫폼/UX
    - 내용: Google은 Google TV에 신규 기능을 추가한다고 발표했습니다. Gemini 탭에서 `Nano Banana`로 사진 기반 이미지를 생성하거나 `Veo`로 짧은 영상을 만들 수 있고, Google Photos 음성 검색과 사진 리믹스, 앨범 기반 동적 슬라이드쇼도 지원합니다. 또한 `Short videos for you` 행을 홈 화면에 도입해 YouTube Shorts 중심의 숏폼 탐색을 미국 기기에서 올여름부터 제공할 예정입니다. 생성 기능은 미국 내 Gemini 지원 TCL Google TV에서 우선 시작되고, 동적 슬라이드쇼는 글로벌 eligible Google TV 기기로 확대됩니다.
    - 관련성: 상
    - 중요도: 상

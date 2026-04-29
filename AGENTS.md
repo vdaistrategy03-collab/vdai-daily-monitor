@@ -70,7 +70,7 @@ All reports must use this exact section order and field naming. Keep section nam
 1. **[업체/플랫폼: 발표 제목]**
    - 상태: **공식 확인** | **주요 매체 확인** | **미확인**
    - 발표 시점: YYYY-MM-DD
-   - 분류: 소프트웨어 | 하드웨어 | 플랫폼 | 콘텐츠 | 커머스 | 스마트홈 | 규제/인증 | 기타
+   - 분류: 소프트웨어 | 하드웨어 | TV 플랫폼/UX | 콘텐츠 | 커머스 | 스마트홈 | 규제/인증 | 기타
    - 내용: [발표 내용 요약]
    - 관련성: 상|중|하
    - 중요도: 상|중|하
@@ -87,7 +87,7 @@ All reports must use this exact section order and field naming. Keep section nam
 1. **[업체/플랫폼: 발표 제목]**
    - 상태: **공식 확인** | **주요 매체 확인** | **미확인**
    - 발표 시점: YYYY-MM-DD
-   - 분류: 소프트웨어 | 하드웨어 | 플랫폼 | 콘텐츠 | 커머스 | 스마트홈 | 기타
+   - 분류: 소프트웨어 | 하드웨어 | TV 플랫폼/UX | 콘텐츠 | 커머스 | 스마트홈 | 기타
    - TV 관련 이유: [TV 화면 경험, 거실 미디어/커머스, 스마트홈 제어와의 연결성]
    - 내용: [발표 내용 요약]
    - 관련성: 상|중|하
@@ -123,6 +123,17 @@ Format rules:
 - Use numbered items only for actual included announcements.
 - Use `- 해당 없음` for empty non-announcement sections.
 - Keep `인사이트` bullets exactly as `의미:`, `참고할 점:`, and `제안:`.
+
+Classification guide:
+
+- `소프트웨어`: TV 또는 TV 앱의 기능 업데이트, 펌웨어, 앱 기능 개선.
+- `하드웨어`: TV 세트, 패널, 리모컨, 사운드바, 스트리밍 기기 등 물리 제품.
+- `TV 플랫폼/UX`: TV OS, 홈 화면, 검색/추천, 계정, 앱 배포, 음성/AI 어시스턴트처럼 TV 사용 경험의 기반 계층.
+- `콘텐츠`: FAST 채널, 스트리밍 콘텐츠, 스포츠/광고 상품 등 시청 콘텐츠와 편성.
+- `커머스`: TV 화면 기반 쇼핑, 광고 거래, 구독/결제, 리테일 연동.
+- `스마트홈`: TV와 IoT, Matter, 홈 제어, 보안, 에너지 관리 연동.
+- `규제/인증`: 에너지, 접근성, 보안, 친환경, 지역 규제 또는 제3자 인증.
+- `기타`: 위 범주에 깔끔하게 들어가지 않지만 모니터링 가치가 있는 발표.
 
 ## Suggested Run Flow
 
