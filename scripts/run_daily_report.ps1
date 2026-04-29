@@ -10,6 +10,7 @@ $repoRoot = $repoRoot.Path
 $defaultCodexBin = Join-Path $env:USERPROFILE ".vscode\extensions\openai.chatgpt-26.422.30944-win32-x64\bin\windows-x86_64\codex.exe"
 $codexBin = if ($env:CODEX_BIN) { $env:CODEX_BIN } elseif (Test-Path $defaultCodexBin) { $defaultCodexBin } else { "codex" }
 $promptFile = if ($env:CODEX_PROMPT_FILE) { $env:CODEX_PROMPT_FILE } else { Join-Path $repoRoot "docs\codex_cron_daily_tv_monitor.md" }
+$validateReportScript = Join-Path $repoRoot "scripts\validate_report_format.ps1"
 $model = if ($env:CODEX_MODEL) { $env:CODEX_MODEL } else { "gpt-5.4" }
 $codexSandbox = if ($env:CODEX_SANDBOX_MODE) { $env:CODEX_SANDBOX_MODE } else { "danger-full-access" }
 $logDir = if ($env:CODEX_LOG_DIR) { $env:CODEX_LOG_DIR } else { Join-Path $repoRoot "logs\cron" }
@@ -250,6 +251,32 @@ function Invoke-CodexExecWithRetry {
     return $lastStatus
 }
 
+function Test-ReportFormat {
+    $todayReport = Join-Path $repoRoot ("new_features\{0}.md" -f (Get-Date -Format "yyyy-MM-dd"))
+    $latestReport = Join-Path $repoRoot "new_features\latest.md"
+    $reportPaths = @($todayReport, $latestReport)
+
+    if (-not (Test-Path $validateReportScript)) {
+        throw "Report format validator not found: $validateReportScript"
+    }
+
+    foreach ($reportPath in $reportPaths) {
+        if (-not (Test-Path $reportPath)) {
+            throw "Expected report file not found: $reportPath"
+        }
+    }
+
+    Write-RunLog ("[{0}] Validating report format." -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"))
+    $output = & powershell -NoProfile -ExecutionPolicy Bypass -File $validateReportScript -Path $reportPaths 2>&1 | Out-String
+    if ($LASTEXITCODE -ne 0) {
+        Write-RunLog $output.TrimEnd()
+        throw "Report format validation failed"
+    }
+    if ($output.Trim().Length -gt 0) {
+        Write-RunLog $output.TrimEnd()
+    }
+}
+
 function Publish-Reports {
     $commitMessage = "Daily TV monitor: $(Get-Date -Format yyyy-MM-dd)"
 
@@ -399,6 +426,7 @@ try {
         exit $cmdStatus
     }
 
+    Test-ReportFormat
     Publish-Reports
     Sync-LocalCheckoutIfOnlyReportsChanged
     exit 0
