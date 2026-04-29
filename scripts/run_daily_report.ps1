@@ -287,7 +287,10 @@ function Test-ReportFormat {
     }
 
     Write-RunLog ("[{0}] Validating report format." -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"))
-    $output = & powershell -NoProfile -ExecutionPolicy Bypass -File $validateReportScript -Path $reportPaths 2>&1 | Out-String
+    $validatorCommand = "& '{0}' -Path @('{1}')" -f
+        ($validateReportScript -replace "'", "''"),
+        (($reportPaths | ForEach-Object { $_ -replace "'", "''" }) -join "','")
+    $output = & powershell -NoProfile -ExecutionPolicy Bypass -Command $validatorCommand 2>&1 | Out-String
     if ($LASTEXITCODE -ne 0) {
         Write-RunLog $output.TrimEnd()
         throw "Report format validation failed"

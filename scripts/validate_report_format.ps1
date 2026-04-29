@@ -1,5 +1,5 @@
 ﻿param(
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $true, ValueFromRemainingArguments = $true)]
     [string[]]$Path
 )
 
@@ -109,5 +109,6 @@ foreach ($inputPath in $Path) {
 }
 
 Write-Host "Report format validation passed."
+
 
 
