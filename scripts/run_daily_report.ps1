@@ -7,12 +7,28 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = Resolve-Path (Join-Path $scriptDir "..")
 $repoRoot = $repoRoot.Path
 
+$logDir = if ($env:CODEX_LOG_DIR) { $env:CODEX_LOG_DIR } else { Join-Path $repoRoot "logs\cron" }
+New-Item -ItemType Directory -Force -Path $logDir | Out-Null
+$timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+$runLog = Join-Path $logDir "run_$timestamp.log"
+
+function Write-RunLog {
+    param([string]$Message)
+    $Message | Tee-Object -FilePath $runLog -Append | Out-Null
+}
+
 function Resolve-CodexBinary {
     if ($env:CODEX_BIN) {
         return $env:CODEX_BIN
     }
 
-    $extensionRoot = Join-Path $env:USERPROFILE ".vscode\extensions"
+    $userProfile = if ($env:USERPROFILE) { $env:USERPROFILE } else { [Environment]::GetFolderPath("UserProfile") }
+    if (-not $userProfile) {
+        Write-RunLog "Unable to resolve user profile path; falling back to PATH lookup for codex."
+        return "codex"
+    }
+
+    $extensionRoot = Join-Path $userProfile ".vscode\extensions"
     $extensionCodexBins = @()
     if (Test-Path $extensionRoot) {
         $extensionCodexBins = Get-ChildItem -Path $extensionRoot -Directory -Filter "openai.chatgpt-*-win32-x64" -ErrorAction SilentlyContinue |
@@ -33,7 +49,6 @@ $promptFile = if ($env:CODEX_PROMPT_FILE) { $env:CODEX_PROMPT_FILE } else { Join
 $validateReportScript = Join-Path $repoRoot "scripts\validate_report_format.ps1"
 $model = if ($env:CODEX_MODEL) { $env:CODEX_MODEL } else { "gpt-5.4" }
 $codexSandbox = if ($env:CODEX_SANDBOX_MODE) { $env:CODEX_SANDBOX_MODE } else { "danger-full-access" }
-$logDir = if ($env:CODEX_LOG_DIR) { $env:CODEX_LOG_DIR } else { Join-Path $repoRoot "logs\cron" }
 $remoteUrl = if ($env:REMOTE_URL) { $env:REMOTE_URL } else { "https://github.com/vdaistrategy03-collab/vdai-daily-monitor.git" }
 $branch = if ($env:BRANCH) { $env:BRANCH } else { "main" }
 $authFile = if ($env:GITHUB_AUTH_FILE) { $env:GITHUB_AUTH_FILE } else { Join-Path $repoRoot ".github-auth.local" }
@@ -42,20 +57,12 @@ $tempRoot = [System.IO.Path]::GetTempPath()
 $codexMaxAttempts = if ($env:CODEX_MAX_ATTEMPTS) { [int]$env:CODEX_MAX_ATTEMPTS } else { 3 }
 $codexTimeoutMinutes = if ($env:CODEX_TIMEOUT_MINUTES) { [int]$env:CODEX_TIMEOUT_MINUTES } else { 45 }
 
-New-Item -ItemType Directory -Force -Path $logDir | Out-Null
-$timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
-$runLog = Join-Path $logDir "run_$timestamp.log"
 $lastMessage = Join-Path $logDir "last_message_$timestamp.txt"
 $lockFile = Join-Path $tempRoot "vdai-daily-monitor-cron.lock"
 $instance = "{0}-{1}" -f ([DateTimeOffset]::Now.ToUnixTimeSeconds()), $PID
 $gitDir = if ($env:TV_AI_DAILY_GIT_DIR) { $env:TV_AI_DAILY_GIT_DIR } else { Join-Path $tempRoot "tv-ai-daily-git-$instance" }
 $workDir = if ($env:TV_AI_DAILY_WORK_DIR) { $env:TV_AI_DAILY_WORK_DIR } else { Join-Path $tempRoot "tv-ai-daily-worktree-$instance" }
 $askpassScript = $null
-
-function Write-RunLog {
-    param([string]$Message)
-    $Message | Tee-Object -FilePath $runLog -Append | Out-Null
-}
 
 function Test-TransientNetworkError {
     param([string]$Output)
