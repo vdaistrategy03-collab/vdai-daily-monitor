@@ -15,7 +15,9 @@
 - 모든 보고서는 한국어로 작성한다.
 - 제목은 `일간 TV 모니터링 리포트`로 한다.
 - `AGENTS.md`의 `Report Format Contract` 섹션에 정의된 섹션 순서, 필드명, 비어 있는 섹션 표기 방식을 반드시 따른다.
-- `new_features/YYYY-MM-DD.md`와 `new_features/latest.md`를 모두 갱신한다.
+- `new_features/YYYY-MM-DD.md` 또는 `new_features/YYYY-MM-DD_요약.md`와 `new_features/latest.md`를 모두 갱신한다.
+- 신규 발표 확인 사항 또는 간접 서비스에 포함 항목이 있으면, 가장 중요한 1건을 20자 이내 한국어로 요약해 날짜 뒤에 붙인다. 예: `new_features/2026-05-08_GoogleTVAI기능.md`.
+- 신규 발표 확인 사항과 간접 서비스가 모두 `해당 없음`이면 기존처럼 `new_features/YYYY-MM-DD.md`를 사용한다.
 - 공통 출처 목록 섹션은 만들지 말고, 각 항목 끝에 `출처`를 둔다.
 - 확인된 직접 TV 항목과 포함한 간접 Google/Amazon 항목에는 `관련성`, `중요도`, `인사이트` 아래 `의미:`, `참고할 점:`, `제안:`을 반드시 넣는다.
 - 신규 발표가 없으면 `신규 발표 확인 사항` 아래에는 `해당 없음`만 적는다.

@@ -39,6 +39,13 @@ function Assert-Condition {
     }
 }
 
+function Test-EmptyAnnouncementBody {
+    param([string]$Body)
+
+    $emptyBody = $Body.Trim()
+    return $emptyBody -eq "해당 없음" -or $emptyBody -eq "- 해당 없음"
+}
+
 function Test-AnnouncementSection {
     param(
         [string]$FilePath,
@@ -47,8 +54,7 @@ function Test-AnnouncementSection {
         [bool]$RequiresTvReason
     )
 
-    $emptyBody = $Body.Trim()
-    if ($emptyBody -eq "해당 없음" -or $emptyBody -eq "- 해당 없음") {
+    if (Test-EmptyAnnouncementBody -Body $Body) {
         return
     }
 
@@ -106,6 +112,20 @@ foreach ($inputPath in $Path) {
     $indirectBody = Get-SectionBody -Text $text -Section "## 간접 서비스"
     Assert-Condition ($null -ne $indirectBody) "${resolvedPath}: unable to parse 간접 서비스."
     Test-AnnouncementSection -FilePath $resolvedPath -SectionName "간접 서비스" -Body $indirectBody -RequiresTvReason $true
+
+    $fileName = [System.IO.Path]::GetFileName($resolvedPath)
+    if ($fileName -ne "latest.md") {
+        $executionDateMatch = [regex]::Match($text, "(?m)^- 실행일:\s+(?<date>\d{4}-\d{2}-\d{2})\s*$")
+        $executionDate = $executionDateMatch.Groups["date"].Value
+        $hasAnnouncement = -not (Test-EmptyAnnouncementBody -Body $directBody)
+        $hasIndirect = -not (Test-EmptyAnnouncementBody -Body $indirectBody)
+        if ($hasAnnouncement -or $hasIndirect) {
+            Assert-Condition ($fileName -match "^$([regex]::Escape($executionDate))_.{1,20}\.md$") "${resolvedPath}: report filename must be '${executionDate}_요약.md' with a 1-20 character suffix when announcements exist."
+            Assert-Condition ($fileName -notmatch '[\\/:*?""<>|\s]') "${resolvedPath}: report filename suffix contains unsafe characters or spaces."
+        } else {
+            Assert-Condition ($fileName -eq "$executionDate.md") "${resolvedPath}: report filename must be '${executionDate}.md' when no announcements exist."
+        }
+    }
 }
 
 Write-Host "Report format validation passed."

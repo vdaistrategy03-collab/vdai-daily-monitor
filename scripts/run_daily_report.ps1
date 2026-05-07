@@ -279,7 +279,18 @@ function Invoke-CodexExecWithRetry {
 }
 
 function Test-ReportFormat {
-    $todayReport = Join-Path $repoRoot ("new_features\{0}.md" -f (Get-Date -Format "yyyy-MM-dd"))
+    $today = Get-Date -Format "yyyy-MM-dd"
+    $todayReports = Get-ChildItem -Path (Join-Path $repoRoot "new_features") -Filter "$today*.md" -ErrorAction SilentlyContinue |
+        Where-Object { $_.Name -ne "latest.md" } |
+        Sort-Object LastWriteTime -Descending
+    if ($todayReports.Count -eq 0) {
+        throw "Expected report file not found: $repoRoot\new_features\$today*.md"
+    }
+    if ($todayReports.Count -gt 1) {
+        Write-RunLog ("[{0}] Multiple report files found for {1}; validating newest: {2}" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"), $today, $todayReports[0].Name)
+    }
+
+    $todayReport = $todayReports[0].FullName
     $latestReport = Join-Path $repoRoot "new_features\latest.md"
     $reportPaths = @($todayReport, $latestReport)
 

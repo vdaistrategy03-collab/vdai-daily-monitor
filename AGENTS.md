@@ -43,10 +43,18 @@ Also include indirect but relevant Google/Amazon launches when they could extend
 
 Update both:
 
-- `new_features/YYYY-MM-DD.md`
+- `new_features/YYYY-MM-DD.md` or `new_features/YYYY-MM-DD_요약.md`
 - `new_features/latest.md`
 
 Use the title `일간 TV 모니터링 리포트`.
+
+Filename rule:
+
+- If `신규 발표 확인 사항` and `간접 서비스` both contain only `해당 없음`, use `new_features/YYYY-MM-DD.md`.
+- If either `신규 발표 확인 사항` or `간접 서비스` contains one or more items, append a short Korean summary of the single most important item after the date: `new_features/YYYY-MM-DD_요약.md`.
+- The summary suffix must be 20 Korean characters or fewer, excluding the date, underscore, and `.md`.
+- Use only filename-safe characters in the suffix. Prefer Korean letters/numbers and remove spaces, slashes, colons, pipes, quotes, and brackets.
+- Keep `new_features/latest.md` as an exact copy of the generated daily report content.
 
 ## Report Format Contract
 
