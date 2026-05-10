@@ -31,10 +31,10 @@ function Resolve-CodexBinary {
     $extensionRoot = Join-Path $userProfile ".vscode\extensions"
     $extensionCodexBins = @()
     if (Test-Path $extensionRoot) {
-        $extensionCodexBins = Get-ChildItem -Path $extensionRoot -Directory -Filter "openai.chatgpt-*-win32-x64" -ErrorAction SilentlyContinue |
+        $extensionCodexBins = @(Get-ChildItem -Path $extensionRoot -Directory -Filter "openai.chatgpt-*-win32-x64" -ErrorAction SilentlyContinue |
             ForEach-Object { Join-Path $_.FullName "bin\windows-x86_64\codex.exe" } |
             Where-Object { Test-Path $_ } |
-            Sort-Object -Descending
+            Sort-Object -Descending)
     }
 
     if ($extensionCodexBins.Count -gt 0) {
@@ -280,9 +280,9 @@ function Invoke-CodexExecWithRetry {
 
 function Test-ReportFormat {
     $today = Get-Date -Format "yyyy-MM-dd"
-    $todayReports = Get-ChildItem -Path (Join-Path $repoRoot "new_features") -Filter "$today*.md" -ErrorAction SilentlyContinue |
+    $todayReports = @(Get-ChildItem -Path (Join-Path $repoRoot "new_features") -Filter "$today*.md" -ErrorAction SilentlyContinue |
         Where-Object { $_.Name -ne "latest.md" } |
-        Sort-Object LastWriteTime -Descending
+        Sort-Object LastWriteTime -Descending)
     if ($todayReports.Count -eq 0) {
         throw "Expected report file not found: $repoRoot\new_features\$today*.md"
     }
@@ -354,7 +354,7 @@ function Publish-Reports {
 
     $reportDest = Join-Path $workDir "new_features"
     New-Item -ItemType Directory -Force -Path $reportDest | Out-Null
-    $reportFiles = Get-ChildItem -Path (Join-Path $repoRoot "new_features") -Filter "*.md"
+    $reportFiles = @(Get-ChildItem -Path (Join-Path $repoRoot "new_features") -Filter "*.md")
     if ($reportFiles.Count -eq 0) {
         throw "No report files found under $repoRoot\new_features."
     }
@@ -393,7 +393,7 @@ function Sync-LocalCheckoutIfOnlyReportsChanged {
         return
     }
 
-    $statusLines = & $gitBin -C $repoRoot status --porcelain=v1 --untracked-files=all
+    $statusLines = @(& $gitBin -C $repoRoot status --porcelain=v1 --untracked-files=all)
     $hasNonReportChange = $false
     foreach ($line in $statusLines) {
         if (-not $line) { continue }
@@ -413,7 +413,7 @@ function Sync-LocalCheckoutIfOnlyReportsChanged {
     $diffClean = $LASTEXITCODE -eq 0
     Invoke-Git -C $repoRoot diff --cached --quiet
     $cachedClean = $LASTEXITCODE -eq 0
-    $untrackedReports = & $gitBin -C $repoRoot ls-files --others --exclude-standard -- new_features
+    $untrackedReports = @(& $gitBin -C $repoRoot ls-files --others --exclude-standard -- new_features)
     if ($diffClean -and $cachedClean -and -not $untrackedReports) {
         return
     }
