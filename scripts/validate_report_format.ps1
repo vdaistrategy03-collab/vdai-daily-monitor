@@ -121,7 +121,7 @@ foreach ($inputPath in $Path) {
         $hasIndirect = -not (Test-EmptyAnnouncementBody -Body $indirectBody)
         if ($hasAnnouncement -or $hasIndirect) {
             Assert-Condition ($fileName -match "^$([regex]::Escape($executionDate))_.{1,20}\.md$") "${resolvedPath}: report filename must be '${executionDate}_요약.md' with a 1-20 character suffix when announcements exist."
-            Assert-Condition ($fileName -notmatch '[\\/:*?""<>|\s]') "${resolvedPath}: report filename suffix contains unsafe characters or spaces."
+            Assert-Condition ($fileName -notmatch '[\\/:*?""<>|]') "${resolvedPath}: report filename suffix contains unsafe characters."
         } else {
             Assert-Condition ($fileName -eq "$executionDate.md") "${resolvedPath}: report filename must be '${executionDate}.md' when no announcements exist."
         }

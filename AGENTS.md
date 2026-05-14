@@ -2,7 +2,7 @@
 
 ## Mission
 
-Produce a daily Korean report about meaningful TV software/hardware announcements, with strategic analysis for Samsung TV competitiveness.
+Produce a daily Korean report about meaningful TV software/hardware announcements, with strategic analysis for Samsung TV competitiveness. TV remains the primary focus, but include meaningful monitor and projector announcements when they affect adjacent display competition or Samsung's broader screen strategy.
 
 ## Working Rules
 
@@ -11,7 +11,7 @@ Produce a daily Korean report about meaningful TV software/hardware announcement
 - Focus first on official sources and major media, then expand to regional coverage if time allows.
 - Exclude rumors and leaks unless they are clearly labeled as unconfirmed and come from highly credible outlets.
 - Do not add one combined source list. Put `출처` links under each item.
-- Every confirmed direct TV item and every included indirect Google/Amazon item must include:
+- Every confirmed direct TV/monitor/projector item and every included indirect Google/Amazon item must include:
   - `관련성: 상|중|하`
   - `중요도: 상|중|하`
   - `인사이트` with exactly these bullets:
@@ -39,6 +39,8 @@ Prioritize:
 
 Also include indirect but relevant Google/Amazon launches when they could extend to TV, living-room commerce/media, or smart-home control.
 
+TV is still the highest-priority category. If meaningful monitor or projector software/hardware announcements appear from the prioritized companies or other strategically relevant display players, include them in `신규 발표 확인 사항` rather than creating a separate category. Do not dilute the report with routine monitor/projector retail promotions, minor availability notices, or commodity spec refreshes unless they have clear competitive relevance for Samsung TVs, premium displays, gaming screens, home cinema, AI UX, content services, or smart-home/living-room strategy.
+
 ## Output Files
 
 Update both:
@@ -53,7 +55,7 @@ Filename rule:
 - If `신규 발표 확인 사항` and `간접 서비스` both contain only `해당 없음`, use `new_features/YYYY-MM-DD.md`.
 - If either `신규 발표 확인 사항` or `간접 서비스` contains one or more items, append a short Korean summary of the single most important item after the date: `new_features/YYYY-MM-DD_요약.md`.
 - The summary suffix must be 20 Korean characters or fewer, excluding the date, underscore, and `.md`.
-- Use only filename-safe characters in the suffix. Prefer Korean letters/numbers and remove spaces, slashes, colons, pipes, quotes, and brackets.
+- Use only filename-safe characters in the suffix. Korean letters/numbers and spaces are allowed for readability; remove slashes, colons, pipes, quotes, brackets, and other unsafe filename characters.
 - Keep `new_features/latest.md` as an exact copy of the generated daily report content.
 
 ## Report Format Contract
@@ -134,9 +136,9 @@ Format rules:
 
 Classification guide:
 
-- `소프트웨어`: TV 또는 TV 앱의 기능 업데이트, 펌웨어, 앱 기능 개선.
-- `하드웨어`: TV 세트, 패널, 리모컨, 사운드바, 스트리밍 기기 등 물리 제품.
-- `TV 플랫폼/UX`: TV OS, 홈 화면, 검색/추천, 계정, 앱 배포, 음성/AI 어시스턴트처럼 TV 사용 경험의 기반 계층.
+- `소프트웨어`: TV/모니터/프로젝터 또는 관련 앱의 기능 업데이트, 펌웨어, 앱 기능 개선.
+- `하드웨어`: TV 세트, 모니터, 프로젝터, 패널, 리모컨, 사운드바, 스트리밍 기기 등 물리 제품.
+- `TV 플랫폼/UX`: TV OS, 홈 화면, 검색/추천, 계정, 앱 배포, 음성/AI 어시스턴트처럼 TV 사용 경험의 기반 계층. 모니터/프로젝터의 AI UX, 스마트 플랫폼, 게이밍 허브, 홈시네마 UX가 TV 경쟁과 연결되면 이 분류를 사용할 수 있다.
 - `콘텐츠`: FAST 채널, 스트리밍 콘텐츠, 스포츠/광고 상품 등 시청 콘텐츠와 편성.
 - `커머스`: TV 화면 기반 쇼핑, 광고 거래, 구독/결제, 리테일 연동.
 - `스마트홈`: TV와 IoT, Matter, 홈 제어, 보안, 에너지 관리 연동.
@@ -149,7 +151,7 @@ Classification guide:
 2. Identify the **latest report execution time** from the newest report and set search window from that timestamp to now.
    - Do **not** use a fixed 24-hour window.
    - This is to backfill possible misses when a prior run had partial search failures.
-3. Investigate direct TV announcements and relevant indirect Google/Amazon items within that dynamic window.
+3. Investigate direct TV announcements first, then meaningful monitor/projector announcements, and relevant indirect Google/Amazon items within that dynamic window.
 4. Write the report in Korean with explicit source attribution per item.
 5. If there are no qualifying items, write `해당 없음` only under `신규 발표 확인 사항`.
 6. Stop after updating the local markdown files.

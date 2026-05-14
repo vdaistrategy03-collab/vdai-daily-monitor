@@ -4,7 +4,7 @@ This repository is set up for a local daily Codex run that generates report mark
 
 ## Mission
 
-Investigate meaningful TV software and hardware announcements with strategic analysis for Samsung TV competitiveness.
+Investigate meaningful TV software and hardware announcements with strategic analysis for Samsung TV competitiveness. TV remains the primary focus, but strategically relevant monitor and projector announcements are also included as adjacent display signals.
 
 Prioritized scope:
 
@@ -23,6 +23,8 @@ Prioritized scope:
 - Apple TV
 
 Also include indirect but relevant Google/Amazon launches when they could extend to TV, living-room commerce/media, or smart-home control.
+
+Monitor and projector announcements are included in the same `신규 발표 확인 사항` section when they have clear relevance to Samsung's TV, premium display, gaming, home cinema, AI UX, or smart-home strategy. Routine promotions and minor retail availability updates stay out of scope.
 
 ## Output
 
