@@ -39,6 +39,10 @@ Prioritize:
 
 Also include indirect but relevant Google/Amazon launches when they could extend to TV, living-room commerce/media, or smart-home control.
 
+For all prioritized TV makers and TV platforms, include major platform, UX, ecosystem, and developer-facing updates when they materially affect TV competitiveness, even if they are not consumer hardware launches. Treat these as `신규 발표 확인 사항` when they are directly about a TV platform, TV OS, TV device family, TV app ecosystem, or TV usage model. This includes updates from official developer blogs, partner blogs, SDK documentation, app distribution guidance, major trade media, and product support channels when the impact is strategically meaningful.
+
+Examples of qualifying platform/UX updates include TV OS or home-screen changes, app discovery surfaces, search/recommendation systems, FAST/content rows, advertising or commerce surfaces, account/profile changes, remote-control input, pointer or motion input, D-pad/focus model changes, voice/AI assistant behavior, gaming/cloud gaming hubs, casting/second-screen flows, accessibility features, security/privacy requirements, app certification requirements, SDK/API changes, app store or distribution policy changes, entitlement/resume/watch-next/recommendation APIs, and smart-home control surfaces. Do not limit this rule to Google TV; apply the same judgment to Tizen, webOS, Roku OS, Fire TV, tvOS/Apple TV, Android TV/Google TV, VIDAA, TiVo/Sharp/Philips/TP Vision platforms, and other strategically relevant TV software layers.
+
 TV is still the highest-priority category. If meaningful monitor or projector software/hardware announcements appear from the prioritized companies or other strategically relevant display players, include them in `신규 발표 확인 사항` rather than creating a separate category. Do not dilute the report with routine monitor/projector retail promotions, minor availability notices, or commodity spec refreshes unless they have clear competitive relevance for Samsung TVs, premium displays, gaming screens, home cinema, AI UX, content services, or smart-home/living-room strategy.
 
 ## Output Files
@@ -151,8 +155,9 @@ Classification guide:
 2. Identify the **latest report execution time** from the newest report and set search window from that timestamp to now.
    - Do **not** use a fixed 24-hour window.
    - This is to backfill possible misses when a prior run had partial search failures.
-3. Investigate direct TV announcements first, then meaningful monitor/projector announcements, and relevant indirect Google/Amazon items within that dynamic window.
-4. Write the report in Korean with explicit source attribution per item.
-5. If there are no qualifying items, write `해당 없음` only under `신규 발표 확인 사항`.
-6. Stop after updating the local markdown files.
-7. Do not commit or push from this repository. Git operations are handled by a separate local process outside this run.
+3. Investigate direct TV announcements first, including platform, developer, input/navigation, discovery/recommendation, AI assistant, app ecosystem, and TV OS updates from all prioritized TV makers and platforms when they affect the TV experience.
+4. Investigate meaningful monitor/projector announcements, and relevant indirect Google/Amazon items within that dynamic window.
+5. Write the report in Korean with explicit source attribution per item.
+6. If there are no qualifying items, write `해당 없음` only under `신규 발표 확인 사항`.
+7. Stop after updating the local markdown files.
+8. Do not commit or push from this repository. Git operations are handled by a separate local process outside this run.
