@@ -67,6 +67,9 @@ function Test-AnnouncementSection {
         $item = $match.Value
         $firstLine = (($item -split "\r?\n") | Select-Object -First 1).Trim()
 
+        if ($item -match "(?m)^\s*-\s+대표 이미지:") {
+            Assert-Condition ($item -match "(?m)^\s*-\s+대표 이미지:\s+!\[[^\]]+\]\(https?://.+\)") "${FilePath}: $firstLine has 대표 이미지 but it is not a valid Markdown image URL."
+        }
         Assert-Condition ($item -match "(?m)^\s*-\s+상태:\s+\*\*(공식 확인|주요 매체 확인|미확인)\*\*") "${FilePath}: $firstLine is missing a valid 상태 field."
         Assert-Condition ($item -match "(?m)^\s*-\s+발표 시점:\s+\d{4}-\d{2}-\d{2}") "${FilePath}: $firstLine is missing 발표 시점."
         Assert-Condition ($item -match "(?m)^\s*-\s+분류:\s+") "${FilePath}: $firstLine is missing 분류."

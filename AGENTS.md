@@ -59,12 +59,28 @@ Filename rule:
 - If `신규 발표 확인 사항` and `간접 서비스` both contain only `해당 없음`, use `new_features/YYYY-MM-DD.md`.
 - If either `신규 발표 확인 사항` or `간접 서비스` contains one or more items, append a short Korean summary of the single most important item after the date: `new_features/YYYY-MM-DD_요약.md`.
 - The summary suffix must be 20 Korean characters or fewer, excluding the date, underscore, and `.md`.
+- Keep official brand and platform names in their original English form in the suffix, such as `Fire TV`, `Roku`, `Google TV`, and `Apple TV`; do not transliterate them into Korean.
 - Use only filename-safe characters in the suffix. Korean letters/numbers and spaces are allowed for readability; remove slashes, colons, pipes, quotes, brackets, and other unsafe filename characters.
 - Keep `new_features/latest.md` as an exact copy of the generated daily report content.
 
 ## Report Format Contract
 
 All reports must use this exact section order and field naming. Keep section names stable across days.
+
+Summary rule:
+
+- Write `## 요약` as a short bullet list of 2-3 concise Korean sentences.
+- Include only discovered qualifying items and their strategic meaning.
+- Do not include Samsung recommendations, action proposals, or phrases such as `삼성은 ... 필요가 있다` in `## 요약`; keep recommendations only in each item's `인사이트` / `제안`.
+- Do not describe where there were no updates, which sources were checked, or the search process in `## 요약`; reserve that detail for `## 확인했으나 업데이트가 없었던 곳` and `## 불확실성 및 검증 공백`.
+- If there are no qualifying items, write one concise bullet saying that no qualifying announcements were found in the search window.
+
+Image rule:
+
+- For each actual included announcement, try to add a visible `대표 이미지` immediately under the numbered item title.
+- Use a source-page representative image such as `og:image` or `twitter:image` from the official source or a cited major-media source, formatted as Markdown image syntax so it renders inline.
+- Do not use generic logos, icons, tracking pixels, author photos, or unrelated stock images. If no suitable representative image is available, omit `대표 이미지`.
+- Do not download, transform, or store third-party images in this repository; link to the original image URL.
 
 ```md
 # 일간 TV 모니터링 리포트
@@ -77,11 +93,13 @@ All reports must use this exact section order and field naming. Keep section nam
 
 ## 요약
 
-[검색 결과와 전략적 함의를 1~3문단으로 요약]
+- [발견된 주요 발표와 전략적 의미를 간략히 작성]
+- [필요 시 두 번째 발견 내용 또는 대응 포인트 작성]
 
 ## 신규 발표 확인 사항
 
 1. **[업체/플랫폼: 발표 제목]**
+   - 대표 이미지: ![[발표 제목] 대표 이미지](이미지 URL)
    - 상태: **공식 확인** | **주요 매체 확인** | **미확인**
    - 발표 시점: YYYY-MM-DD
    - 분류: 소프트웨어 | 하드웨어 | TV 플랫폼/UX | 콘텐츠 | 커머스 | 스마트홈 | 규제/인증 | 기타
@@ -99,6 +117,7 @@ All reports must use this exact section order and field naming. Keep section nam
 ## 간접 서비스
 
 1. **[업체/플랫폼: 발표 제목]**
+   - 대표 이미지: ![[발표 제목] 대표 이미지](이미지 URL)
    - 상태: **공식 확인** | **주요 매체 확인** | **미확인**
    - 발표 시점: YYYY-MM-DD
    - 분류: 소프트웨어 | 하드웨어 | TV 플랫폼/UX | 콘텐츠 | 커머스 | 스마트홈 | 기타
