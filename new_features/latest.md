@@ -15,7 +15,7 @@
 ## 신규 발표 확인 사항
 
 1. **Amazon Fire TV: FIFA World Cup 2026 전용 시청 경험 공개**
-   - 대표 이미지: ![Amazon Fire TV FIFA World Cup 2026 대표 이미지](https://images.ctfassets.net/8aevphvgewt8/6zD75D1LwWzQw5r1G9Rhj8/ca165c1bd59a52db9ae33184f92dcbfb/FIFA_16x9_Hero.jpg)
+   - 대표 이미지: ![Amazon Fire TV FIFA World Cup 2026 대표 이미지](https://assets.aboutamazon.com/64/67/1da350fb434f9464b7495c786111/world-cup-hub-image-2000x1125.png)
    - 상태: **공식 확인**
    - 발표 시점: 2026-06-09
    - 분류: TV 플랫폼/UX
@@ -31,7 +31,7 @@
      - [About Amazon Fire TV 태그](https://www.aboutamazon.com/news/tag/fire-tv)
 
 2. **Apple TV: tvOS 27 Dynamic Type 대응 세션 공개**
-   - 대표 이미지: ![Apple tvOS 27 Dynamic Type 대표 이미지](https://devimages-cdn.apple.com/wwdc-services/images/124/7569/7569_wide_250x141_2x.jpg)
+   - 대표 이미지: ![Apple tvOS 27 Dynamic Type 대표 이미지](https://devimages-cdn.apple.com/wwdc-services/images/9B2E82C5-4DDF-4B9A-9459-328D8E297696/10732/10732_wide_900x506_2x.jpg)
    - 상태: **공식 확인**
    - 발표 시점: 2026-06-09
    - 분류: TV 플랫폼/UX
