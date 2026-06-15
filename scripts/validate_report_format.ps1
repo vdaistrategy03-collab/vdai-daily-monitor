@@ -77,8 +77,8 @@ function Test-AnnouncementSection {
             Assert-Condition ($item -match "(?m)^\s*-\s+TV 관련 이유:\s+") "${FilePath}: $firstLine is missing TV 관련 이유."
         }
         Assert-Condition ($item -match "(?m)^\s*-\s+내용:\s+") "${FilePath}: $firstLine is missing 내용."
-        Assert-Condition ($item -match "(?m)^\s*-\s+관련성:\s+(상|중|하)\s*$") "${FilePath}: $firstLine is missing a valid 관련성."
-        Assert-Condition ($item -match "(?m)^\s*-\s+중요도:\s+(상|중|하)\s*$") "${FilePath}: $firstLine is missing a valid 중요도."
+        Assert-Condition ($item -match "(?m)^\s*-\s+관련성:\s+(상|중|하)\s+\([^)]+\)\s*$") "${FilePath}: $firstLine is missing a valid 관련성 with a brief parenthetical rationale."
+        Assert-Condition ($item -match "(?m)^\s*-\s+중요도:\s+(상|중|하)\s+\([^)]+\)\s*$") "${FilePath}: $firstLine is missing a valid 중요도 with a brief parenthetical rationale."
         Assert-Condition ($item -match "(?m)^\s*-\s+인사이트\s*$") "${FilePath}: $firstLine is missing 인사이트."
         Assert-Condition ($item -match "(?m)^\s*-\s+의미:\s+") "${FilePath}: $firstLine is missing 인사이트/의미."
         Assert-Condition ($item -match "(?m)^\s*-\s+참고할 점:\s+") "${FilePath}: $firstLine is missing 인사이트/참고할 점."

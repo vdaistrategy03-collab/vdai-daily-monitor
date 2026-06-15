@@ -12,8 +12,8 @@ Produce a daily Korean report about meaningful TV software/hardware announcement
 - Exclude rumors and leaks unless they are clearly labeled as unconfirmed and come from highly credible outlets.
 - Do not add one combined source list. Put `출처` links under each item.
 - Every confirmed direct TV/monitor/projector item and every included indirect Google/Amazon item must include:
-  - `관련성: 상|중|하`
-  - `중요도: 상|중|하`
+  - `관련성: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)`
+  - `중요도: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)`
   - `인사이트` with exactly these bullets:
     - `의미:`
     - `참고할 점:`
@@ -69,7 +69,7 @@ All reports must use this exact section order and field naming. Keep section nam
 
 Summary rule:
 
-- Write `## 요약` as a short bullet list of 2-3 concise Korean sentences.
+- Write `## 요약` as a short bullet list of 2-3 concise Korean summaries. Prefer shortened forms such as `라인업 공개`, `경쟁 구도 확인`, and `영향 가능` over full sentence endings such as `공개했다` or `보여준다`.
 - Include only discovered qualifying items and their strategic meaning.
 - Do not include Samsung recommendations, action proposals, or phrases such as `삼성은 ... 필요가 있다` in `## 요약`; keep recommendations only in each item's `인사이트` / `제안`.
 - Do not describe where there were no updates, which sources were checked, or the search process in `## 요약`; reserve that detail for `## 확인했으나 업데이트가 없었던 곳` and `## 불확실성 및 검증 공백`.
@@ -104,8 +104,8 @@ Image rule:
    - 발표 시점: YYYY-MM-DD
    - 분류: 소프트웨어 | 하드웨어 | TV 플랫폼/UX | 콘텐츠 | 커머스 | 스마트홈 | 규제/인증 | 기타
    - 내용: [발표 내용 요약]
-   - 관련성: 상|중|하
-   - 중요도: 상|중|하
+   - 관련성: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
+   - 중요도: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
    - 인사이트
      - 의미: [삼성 TV 경쟁력 관점의 의미]
      - 참고할 점: [비교/검증/리스크/추적 포인트]
@@ -123,8 +123,8 @@ Image rule:
    - 분류: 소프트웨어 | 하드웨어 | TV 플랫폼/UX | 콘텐츠 | 커머스 | 스마트홈 | 기타
    - TV 관련 이유: [TV 화면 경험, 거실 미디어/커머스, 스마트홈 제어와의 연결성]
    - 내용: [발표 내용 요약]
-   - 관련성: 상|중|하
-   - 중요도: 상|중|하
+   - 관련성: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
+   - 중요도: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
    - 인사이트
      - 의미: [삼성 TV 경쟁력 관점의 의미]
      - 참고할 점: [비교/검증/리스크/추적 포인트]
