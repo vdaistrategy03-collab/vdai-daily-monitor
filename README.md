@@ -4,7 +4,7 @@ This repository is set up for a local daily Codex run that generates report mark
 
 ## Mission
 
-Investigate meaningful TV software and hardware announcements with strategic analysis for Samsung TV competitiveness. TV remains the primary focus, but strategically relevant monitor and projector announcements are also included as adjacent display signals.
+Investigate meaningful TV software and hardware announcements with strategic analysis for Samsung TV competitiveness. TV remains the primary focus, but strategically relevant monitor and projector announcements are also included as adjacent display signals. The monitor also tracks AI regulation, policy, guidance, and enforcement that could affect Samsung TV AI services.
 
 Prioritized scope:
 
@@ -26,11 +26,15 @@ Also include indirect but relevant Google/Amazon launches when they could extend
 
 Monitor and projector announcements are included in the same `신규 발표 확인 사항` section when they have clear relevance to Samsung's TV, premium display, gaming, home cinema, AI UX, or smart-home strategy. Routine promotions and minor retail availability updates stay out of scope.
 
+AI regulation items are reported in `AI 규제 동향` only when they plausibly affect Samsung TV AI service categories such as content/UI personalization, media processing, agents/OS, voice or multimodal interaction, on-device AI, advertising, or commerce.
+
+Tier 1 AI regulation jurisdictions are checked every run. Tier 2 AI regulation markets are checked every Monday over the preceding 7 days ending at the report 기준 시각.
+
 ## Output
 
 Each run updates:
 
-- `new_features/YYYY-MM-DD.md`
+- `new_features/YYYY-MM-DD.md` or `new_features/YYYY-MM-DD_요약.md`
 - `new_features/latest.md`
 
 All report content must be in Korean and follow the format rules in `AGENTS.md`.
