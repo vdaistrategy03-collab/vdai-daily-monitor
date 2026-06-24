@@ -8,26 +8,11 @@
 
 ## 요약
 
-- Best Buy RGB LED 전국 전시·독점 판매, 삼성 포함 차세대 TV 유통 경쟁 가속
-- 미국 오프라인 비교 체험이 프리미엄 화질 포지셔닝의 핵심 전장으로 부상
+- 주요 신규 발표·간접 서비스·AI 규제 적격 항목 미확인, Best Buy 유통 PR은 기타 항목으로 기록
 
 ## 신규 발표 확인 사항
 
-1. **Best Buy·삼성·Sony·LG·TCL·Hisense: RGB LED TV 미국 전국 전시·독점 판매 개시**
-   - 대표 이미지: ![Best Buy RGB LED TV 대표 이미지](https://corporate.bestbuy.com/wp-content/uploads/2020/02/RGB-blog-2.jpg)
-   - 상태: **공식 확인**
-   - 발표 시점: 2026-06-24
-   - 분류: 하드웨어
-   - 내용: Best Buy는 삼성, Sony, LG, TCL, Hisense의 RGB LED TV를 미국 전 매장급으로 전시하고 앱·웹·오프라인에서 판매하는 유일한 전국 단위 리테일러가 됐다고 발표했다. Best Buy는 50형부터 XXL TV 라인업의 116형까지 RGB LED 제품을 비교 체험할 수 있도록 구성했고, RGB LED를 적·녹·청 개별 LED 존으로 밝기와 색 정확도를 끌어올리는 차세대 TV 기술로 소개했다. Axios는 제조사 자사몰과 일부 소규모 판매처에서도 제품을 살 수 있지만, 전국 단위 체험·판매 채널 독점은 Best Buy가 확보했다고 전했다.
-   - 관련성: 상 (삼성 포함 프리미엄 TV 채널 경쟁)
-   - 중요도: 상 (전국 전시·독점 유통)
-   - 인사이트
-     - 의미: 미국 프리미엄 TV 경쟁이 단순 스펙 비교를 넘어 오프라인 매대에서 RGB LED와 OLED·Mini LED를 바로 대조하는 체험 경쟁으로 이동해, 삼성의 차세대 화질 메시지와 리테일 데모 전략이 경쟁사와 직접 충돌한다.
-     - 참고할 점: RGB LED 구현 수준은 브랜드별로 다를 수 있어 실제 화질 우위는 밝기·색재현·시야각·가격대·대형 인치 구성에서 갈릴 가능성이 크다.
-     - 제안: 삼성은 Best Buy 매장 기준 RGB LED 시연 콘텐츠, OLED 대비 비교 문구, 98형 이상 초대형 SKU 노출 방식을 Sony·LG·TCL·Hisense와 동선 단위로 비교 점검할 필요가 있다.
-   - 출처
-     - [Best Buy Corporate - Best Buy introduces RGB LED TVs to stores nationwide, ushering new era of home theater](https://corporate.bestbuy.com/2026/rgb-led-tv/)
-     - [Axios - Best Buy stakes claim on next-gen TVs](https://www.axios.com/2026/06/24/best-buy-tv-rgb-led-television)
+해당 없음
 
 ## 간접 서비스
 
@@ -36,6 +21,12 @@
 ## AI 규제 동향
 
 해당 없음
+
+## 기타 항목
+
+1. **Best Buy: RGB LED TV 미국 전국 전시·판매 캠페인**
+   - 요약: 관련성 중·중요도 하 - 삼성 포함 주요 브랜드 RGB LED TV의 Best Buy 전국 매장 노출 확대이나 리테일 PR 성격, 제품·기술 신규성 제한.
+   - 출처: [Best Buy Corporate](https://corporate.bestbuy.com/2026/rgb-led-tv/), [Axios](https://www.axios.com/2026/06/24/best-buy-tv-rgb-led-television)
 
 ## 확인했으나 업데이트가 없었던 곳
 
@@ -153,6 +144,6 @@
 
 ## 불확실성 및 검증 공백
 
-- Best Buy RGB LED TV 발표는 유통사 주도 공개라 브랜드별 실제 출시 시점, 패널 구조, 가격 정책은 각 제조사 제품 페이지에서 추가 분해가 필요함.
+- Best Buy RGB LED TV 항목은 공식 발표이지만 유통사 주도 PR 성격이 강해 기타 항목으로 낮춰 기록했으며, 브랜드별 실제 출시 시점, 패널 구조, 가격 정책은 각 제조사 제품 페이지에서 추가 확인이 필요함.
 - Samsung Global TVs & Displays, Hisense Global Newsroom, FCC 업데이트 페이지는 일부 지역 리다이렉션·페이지 로딩 제약이 있어 대체 카테고리 페이지와 검색 결과로 교차 확인함.
 - 2026-06-24 Google Play 결제 선택권 공지는 TV 앱 수익화와 간접 연결 가능성은 있으나, 공식 도움말의 현재 대상이 모바일·태블릿 폼팩터로 명시돼 오늘 리포트의 직접 TV 항목에서는 제외함.

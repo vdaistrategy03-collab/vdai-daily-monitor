@@ -20,6 +20,7 @@ Additionally, monitor newly emerging AI regulation, policy, and enforcement acro
     - `의미:`
     - `참고할 점:`
     - `제안:`
+- Exception: if a discovered item has `관련성: 하` or `중요도: 하`, do not place it in the main `신규 발표 확인 사항`, `간접 서비스`, or `AI 규제 동향` sections. Put it under `기타 항목` with only title, one-line summary, and source links.
 
 ## Source Discovery and RSS
 
@@ -117,6 +118,20 @@ Examples of qualifying platform/UX updates include TV OS or home-screen changes,
 
 TV is still the highest-priority category. If meaningful monitor or projector software/hardware announcements appear from the prioritized companies or other strategically relevant display players, include them in `신규 발표 확인 사항` rather than creating a separate category. Do not dilute the report with routine monitor/projector retail promotions, minor availability notices, or commodity spec refreshes unless they have clear competitive relevance for Samsung TVs, premium displays, gaming screens, home cinema, AI UX, content services, or smart-home/living-room strategy.
 
+## Relevance and Importance Calibration
+
+Use strict grading. Do not inflate `관련성` or `중요도` merely because a priority brand is mentioned.
+
+- `관련성: 상`: Directly affects Samsung TV competitiveness, TV OS/platform UX, app ecosystem, smart-home control, premium TV hardware, content discovery, advertising/commerce surfaces, or TV AI services.
+- `관련성: 중`: Connected to TV/display strategy, sales channels, adjacent monitor/projector competition, or living-room services, but not a direct product/platform/AI service change.
+- `관련성: 하`: Only loosely connected to Samsung TV strategy, such as mobile-only platform policy, broad company news, awards, interviews, generic retail activity, or AI policy with weak TV-service linkage.
+- `중요도: 상`: Requires near-term executive attention because it changes a major product, platform, developer rule, regulatory obligation, competitive capability, or large-market availability.
+- `중요도: 중`: Worth tracking for strategy or follow-up, but does not immediately change Samsung TV product/platform/regulatory priorities.
+- `중요도: 하`: Low-actionability signal such as retail PR, campaign/marketing posts, minor availability, awards, interviews, small catalog additions, support-page wording changes, or routine promotional/affiliate coverage.
+- Best Buy-like retailer-led announcements about store displays, comparison demos, sales campaigns, or "exclusive national retailer" positioning should generally be `중요도: 하` unless they disclose genuinely new product specs, pricing, launch timing, or materially exclusive market access.
+
+Items with either `관련성: 하` or `중요도: 하` still belong in the report when they are credible and mildly relevant, but they must be placed only in `기타 항목` and summarized briefly.
+
 ## AI Regulation Scope
 
 In addition to product/platform announcements, track newly emerging AI regulation, policy, guidance, and enforcement that could affect Samsung TV AI services. Report these under the dedicated `AI 규제 동향` section.
@@ -163,7 +178,7 @@ Use the title `일간 TV 모니터링 리포트`.
 
 Filename rule:
 
-- If `신규 발표 확인 사항`, `간접 서비스`, and `AI 규제 동향` all contain only `해당 없음`, use `new_features/YYYY-MM-DD.md`.
+- If `신규 발표 확인 사항`, `간접 서비스`, and `AI 규제 동향` all contain only `해당 없음`, use `new_features/YYYY-MM-DD.md` even when `기타 항목` contains low-priority items.
 - If any of `신규 발표 확인 사항`, `간접 서비스`, or `AI 규제 동향` contains one or more items, append a short Korean summary of the single most important item after the date: `new_features/YYYY-MM-DD_요약.md`.
 - The summary suffix must be 20 Korean characters or fewer, excluding the date, underscore, and `.md`.
 - Keep official brand and platform names in their original English form in the suffix, such as `Fire TV`, `Roku`, `Google TV`, and `Apple TV`; do not transliterate them into Korean.
@@ -178,6 +193,7 @@ Summary rule:
 
 - Write `## 요약` as a short bullet list of 2-3 concise Korean summaries. Prefer shortened forms such as `라인업 공개`, `경쟁 구도 확인`, and `영향 가능` over full sentence endings such as `공개했다` or `보여준다`.
 - Include only discovered qualifying items and their strategic meaning.
+- Do not include `기타 항목` items in `## 요약` unless there are no qualifying items in `신규 발표 확인 사항`, `간접 서비스`, or `AI 규제 동향`; in that case, write one concise bullet noting no major qualifying update and that low-priority signals are listed separately.
 - Do not include Samsung recommendations, action proposals, or phrases such as `삼성은 ... 필요가 있다` in `## 요약`; keep recommendations only in each item's `인사이트` / `제안`.
 - Do not describe where there were no updates, which sources were checked, or the search process in `## 요약`; reserve that detail for `## 확인했으나 업데이트가 없었던 곳` and `## 불확실성 및 검증 공백`.
 - If there are no qualifying items, write one concise bullet saying that no qualifying announcements were found in the search window.
@@ -259,6 +275,12 @@ Image rule:
      - [출처명](URL)
      - [출처명](URL)
 
+## 기타 항목
+
+1. **[업체/플랫폼: 발표 제목]**
+   - 요약: 관련성 상|중|하·중요도 상|중|하 - [저우선순위 이유를 포함해 1줄로 작성]
+   - 출처: [출처명](URL), [출처명](URL)
+
 ## 확인했으나 업데이트가 없었던 곳
 
 - **[업체/플랫폼]**
@@ -277,7 +299,10 @@ Format rules:
 - If there are no qualifying items, write only `해당 없음` under `## 신규 발표 확인 사항`.
 - If there are no qualifying indirect Google/Amazon items, write only `해당 없음` under `## 간접 서비스`.
 - If there are no qualifying AI regulation items, write only `해당 없음` under `## AI 규제 동향`.
-- Do not rename, reorder, or omit the six required top-level sections.
+- If there are no low-priority items, write only `해당 없음` under `## 기타 항목`.
+- Place every credible item with either `관련성: 하` or `중요도: 하` under `## 기타 항목`, not under the three main item sections.
+- Keep `## 기타 항목` intentionally brief: each item must contain only the numbered title, a single `요약` line, and one `출처` line with links. Do not add representative images, status, date, classification, long analysis, or `인사이트` bullets there.
+- Do not rename, reorder, or omit the seven required top-level sections.
 - Do not add a combined source list anywhere in the report.
 - Put item sources under that item only, using the `출처` field.
 - Use numbered items only for actual included announcements.
@@ -304,7 +329,8 @@ Classification guide:
 3. Investigate direct TV announcements first, including platform, developer, input/navigation, discovery/recommendation, AI assistant, app ecosystem, and TV OS updates from all prioritized TV makers and platforms when they affect the TV experience.
 4. Investigate meaningful monitor/projector announcements, and relevant indirect Google/Amazon items within that dynamic window.
 5. Investigate AI regulation per the `AI Regulation Scope` section: run the four search themes (T1–T4) against Tier 1 jurisdictions every run. Every Monday, also run the Tier 2 sweep across the preceding 7 days ending at the report 기준 시각, even if the normal report search window is shorter or longer. Keep only items that pass the Samsung TV AI service relevance checklist and tag each with `영향 범주`.
-6. Write the report in Korean with explicit source attribution per item.
-7. If there are no qualifying items in a section, write `해당 없음` only under that section.
-8. Stop after updating the local markdown files.
-9. Do not commit or push from this repository. Git operations are handled by a separate local process outside this run.
+6. Grade relevance and importance strictly. If either score is `하`, route the item to `기타 항목` with only title, one-line summary, and source links.
+7. Write the report in Korean with explicit source attribution per item.
+8. If there are no qualifying items in a section, write `해당 없음` only under that section.
+9. Stop after updating the local markdown files.
+10. Do not commit or push from this repository. Git operations are handled by a separate local process outside this run.

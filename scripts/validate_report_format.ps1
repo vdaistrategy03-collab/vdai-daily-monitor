@@ -11,6 +11,7 @@ $requiredSections = @(
     "## 신규 발표 확인 사항",
     "## 간접 서비스",
     "## AI 규제 동향",
+    "## 기타 항목",
     "## 확인했으나 업데이트가 없었던 곳",
     "## 불확실성 및 검증 공백"
 )
@@ -125,6 +126,33 @@ function Test-AiRegulationSection {
     }
 }
 
+function Test-OtherSection {
+    param(
+        [string]$FilePath,
+        [string]$Body
+    )
+
+    if (Test-EmptyAnnouncementBody -Body $Body) {
+        return
+    }
+
+    Assert-Condition ($Body -match "(?m)^1\.\s+\*\*.+\*\*") "${FilePath}: '기타 항목' must use numbered items or '해당 없음'."
+
+    $matches = [regex]::Matches($Body, "(?ms)^\d+\.\s+\*\*.*?(?=^\d+\.\s+\*\*|\z)")
+    Assert-Condition ($matches.Count -gt 0) "${FilePath}: '기타 항목' has no parseable items."
+
+    foreach ($match in $matches) {
+        $item = $match.Value
+        $firstLine = (($item -split "\r?\n") | Select-Object -First 1).Trim()
+        $nonEmptyLines = @(($item -split "\r?\n") | Where-Object { $_.Trim().Length -gt 0 })
+
+        Assert-Condition ($nonEmptyLines.Count -eq 3) "${FilePath}: $firstLine in '기타 항목' must contain only title, 요약, and 출처."
+        Assert-Condition ($item -match "(?m)^\s*-\s+요약:\s+관련성\s+(상|중|하)·중요도\s+(상|중|하)\s+-\s+.+$") "${FilePath}: $firstLine is missing 기타 항목 요약 with relevance/importance grades."
+        Assert-Condition ($item -match "(?m)^\s*-\s+출처:\s+.*\[.+\]\(https?://.+\)") "${FilePath}: $firstLine must include source links on one 출처 line."
+        Assert-Condition ($item -notmatch "(?m)^\s*-\s+(대표 이미지|상태|발표 시점|분류|내용|TV 관련 이유|인사이트)\s*:?\s*") "${FilePath}: $firstLine in '기타 항목' contains fields reserved for main items."
+    }
+}
+
 foreach ($inputPath in $Path) {
     $resolvedPath = Resolve-Path $inputPath
     $text = Get-Content -Raw -Encoding UTF8 -Path $resolvedPath
@@ -163,6 +191,10 @@ foreach ($inputPath in $Path) {
     $aiRegulationBody = Get-SectionBody -Text $text -Section "## AI 규제 동향"
     Assert-Condition ($null -ne $aiRegulationBody) "${resolvedPath}: unable to parse AI 규제 동향."
     Test-AiRegulationSection -FilePath $resolvedPath -Body $aiRegulationBody
+
+    $otherBody = Get-SectionBody -Text $text -Section "## 기타 항목"
+    Assert-Condition ($null -ne $otherBody) "${resolvedPath}: unable to parse 기타 항목."
+    Test-OtherSection -FilePath $resolvedPath -Body $otherBody
 
     $fileName = [System.IO.Path]::GetFileName($resolvedPath)
     if ($fileName -ne "latest.md") {
