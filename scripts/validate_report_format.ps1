@@ -16,6 +16,13 @@ $requiredSections = @(
     "## 불확실성 및 검증 공백"
 )
 
+$imageQualityEnforcementDate = [datetime]::ParseExact("2026-06-27", "yyyy-MM-dd", [System.Globalization.CultureInfo]::InvariantCulture)
+$lowResolutionImageUrlPatterns = @(
+    "(?i)(?:^|[._/-])width[-_=](?:[1-5]?\d{1,2})(?:[._/-]|$)",
+    "(?i)[?&](?:w|width|resize|size)=(?:[1-5]?\d{1,2})(?:\D|$)",
+    "(?i)(?:^|[._/-])(?:thumb|thumbnail|small|lowres|placeholder)(?:[._/-]|$)"
+)
+
 function Get-SectionBody {
     param(
         [string]$Text,
@@ -48,12 +55,24 @@ function Test-EmptyAnnouncementBody {
     return $emptyBody -eq "해당 없음" -or $emptyBody -eq "- 해당 없음"
 }
 
+function Test-LowResolutionImageUrl {
+    param([string]$Url)
+
+    foreach ($pattern in $lowResolutionImageUrlPatterns) {
+        if ($Url -match $pattern) {
+            return $true
+        }
+    }
+    return $false
+}
+
 function Test-AnnouncementSection {
     param(
         [string]$FilePath,
         [string]$SectionName,
         [string]$Body,
-        [bool]$RequiresTvReason
+        [bool]$RequiresTvReason,
+        [bool]$EnforceImageQuality
     )
 
     if (Test-EmptyAnnouncementBody -Body $Body) {
@@ -70,7 +89,12 @@ function Test-AnnouncementSection {
         $firstLine = (($item -split "\r?\n") | Select-Object -First 1).Trim()
 
         if ($item -match "(?m)^\s*-\s+대표 이미지:") {
-            Assert-Condition ($item -match "(?m)^\s*-\s+대표 이미지:\s+!\[[^\]]+\]\(https?://.+\)") "${FilePath}: $firstLine has 대표 이미지 but it is not a valid Markdown image URL."
+            $imageMatch = [regex]::Match($item, "(?m)^\s*-\s+대표 이미지:\s+!\[[^\]]+\]\((?<url>https?://[^)\s]+)\)")
+            Assert-Condition ($imageMatch.Success) "${FilePath}: $firstLine has 대표 이미지 but it is not a valid Markdown image URL."
+            if ($EnforceImageQuality) {
+                $imageUrl = $imageMatch.Groups["url"].Value
+                Assert-Condition (-not (Test-LowResolutionImageUrl -Url $imageUrl)) "${FilePath}: $firstLine uses a likely thumbnail/low-resolution 대표 이미지 URL: $imageUrl"
+            }
         }
         Assert-Condition ($item -match "(?m)^\s*-\s+상태:\s+\*\*(공식 확인|주요 매체 확인|미확인)\*\*") "${FilePath}: $firstLine is missing a valid 상태 field."
         Assert-Condition ($item -match "(?m)^\s*-\s+발표 시점:\s+\d{4}-\d{2}-\d{2}") "${FilePath}: $firstLine is missing 발표 시점."
@@ -167,6 +191,7 @@ foreach ($inputPath in $Path) {
 
     $executionDateMatchForRules = [regex]::Match($text, "(?m)^- 실행일:\s+(?<date>\d{4}-\d{2}-\d{2})\s*$")
     $executionDateForRules = [datetime]::ParseExact($executionDateMatchForRules.Groups["date"].Value, "yyyy-MM-dd", [System.Globalization.CultureInfo]::InvariantCulture)
+    $enforceImageQuality = $executionDateForRules -ge $imageQualityEnforcementDate
     if ($executionDateForRules.DayOfWeek -eq [System.DayOfWeek]::Monday) {
         Assert-Condition ($text -match "AI 규제 Tier 2") "${resolvedPath}: Monday reports must explicitly note the AI 규제 Tier 2 weekly sweep."
         Assert-Condition ($text -match "7일") "${resolvedPath}: Monday AI 규제 Tier 2 sweep must mention the 7-day search window."
@@ -182,11 +207,11 @@ foreach ($inputPath in $Path) {
 
     $directBody = Get-SectionBody -Text $text -Section "## 신규 발표 확인 사항"
     Assert-Condition ($null -ne $directBody) "${resolvedPath}: unable to parse 신규 발표 확인 사항."
-    Test-AnnouncementSection -FilePath $resolvedPath -SectionName "신규 발표 확인 사항" -Body $directBody -RequiresTvReason $false
+    Test-AnnouncementSection -FilePath $resolvedPath -SectionName "신규 발표 확인 사항" -Body $directBody -RequiresTvReason $false -EnforceImageQuality $enforceImageQuality
 
     $indirectBody = Get-SectionBody -Text $text -Section "## 간접 서비스"
     Assert-Condition ($null -ne $indirectBody) "${resolvedPath}: unable to parse 간접 서비스."
-    Test-AnnouncementSection -FilePath $resolvedPath -SectionName "간접 서비스" -Body $indirectBody -RequiresTvReason $true
+    Test-AnnouncementSection -FilePath $resolvedPath -SectionName "간접 서비스" -Body $indirectBody -RequiresTvReason $true -EnforceImageQuality $enforceImageQuality
 
     $aiRegulationBody = Get-SectionBody -Text $text -Section "## AI 규제 동향"
     Assert-Condition ($null -ne $aiRegulationBody) "${resolvedPath}: unable to parse AI 규제 동향."

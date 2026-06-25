@@ -201,7 +201,7 @@ Summary rule:
 Image rule:
 
 - For each actual included announcement, try to add a visible `대표 이미지` immediately under the numbered item title.
-- Use a source-page representative image such as `og:image` or `twitter:image` from the official source or a cited major-media source, formatted as Markdown image syntax so it renders inline.
+- Use a source-page representative image such as `og:image` or `twitter:image` from the official source or a cited major-media source, formatted as Markdown image syntax so it renders inline. Prefer `og:image`/`twitter:image`; if those are unavailable or unsuitable, use the largest candidate from `srcset`/`data-srcset` (preferably 1200px or wider). Never use explicit thumbnail, low-resolution, or placeholder URLs such as `width-100`, `width-200`, `width-300`, `w=300`, `thumbnail`, `thumb`, or `small`; omit the representative image if no suitable high-resolution image is available.
 - Do not use generic logos, icons, tracking pixels, author photos, or unrelated stock images. If no suitable representative image is available, omit `대표 이미지`.
 - Do not download, transform, or store third-party images in this repository; link to the original image URL.
 
