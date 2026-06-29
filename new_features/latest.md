@@ -14,7 +14,7 @@
 ## 신규 발표 확인 사항
 
 1. **LG: StanbyME 2 Max 공개**
-   - 대표 이미지: ![LG StanbyME 2 Max 대표 이미지](https://www.lg.com/content/dam/channel/wcms/ca_en/images/media-entertainment-solution/stanbyme2max/main-image-desktopmobile-stanbyme2max.png)
+   - 대표 이미지: ![LG StanbyME 2 Max 대표 이미지](https://www.lg.com/content/dam/channel/wcms/global/newsroom/news/media-entertainment-solution/lg-electronics-unveils-stanbyme2-max-an-immersive-personal-screen-with-a-larger-32-inch-4k-display/LG%20StanbyME%202%20Image%201.png)
    - 상태: **공식 확인**
    - 발표 시점: 2026-06-29
    - 분류: 하드웨어
@@ -30,7 +30,7 @@
      - [Engadget](https://www.engadget.com/2204176/lg-stanbyme-2-max-is-a-standalone-32-inch-touchscreen-display-that-costs-1300/)
 
 2. **Google Android: Eclipsa Video HDR 기본 지원 발표**
-   - 대표 이미지: ![Google Android Eclipsa Video 대표 이미지](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhGg9E8BsBcgigJ3Pwhp0Wbd85wffhQKw9jT9eW4_IJHtJsxtaqBqZoWIc4agLIZu9h2eWFEnMgipcv2PnMM2UC9tsZOJp3AMjsOX1KQRoisg5IKTRS20hFOIvJmlViYFz-QOh3-KdyFRIgUaiKs2ehjrJBd9W_yW13aP4xgRQovNCEAviajCLWFTTVrjs/w1200-h630-p-k-no-nu/Eclipsa%20Video%20V01%20White_Meta.png)
+   - 대표 이미지: ![Google Android Eclipsa Video 대표 이미지](https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEirgS5TsogRUxWbypUiFlWIRuL8nQhdagvc7UHVFjoDG00SjqSrMniKFEys-EzgcrHKi6Am5BrtALEs7px1oaaJ5ciaO7hP0_49i8RuD7uCckjW7jYWrSoFkDlob6dJhL42MPLiBQqAjaPMOMJDEjZjDgvVe0P28fw13RlMNSiMEAlx5XFXCr8o6L8SRo0/s1600/Eclpsa%20Blog%20post%20image-AlphaB.png)
    - 상태: **공식 확인**
    - 발표 시점: 2026-06-29
    - 분류: TV 플랫폼/UX
