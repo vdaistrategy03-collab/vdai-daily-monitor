@@ -47,6 +47,7 @@ function Resolve-CodexBinary {
 $codexBin = Resolve-CodexBinary
 $promptFile = if ($env:CODEX_PROMPT_FILE) { $env:CODEX_PROMPT_FILE } else { Join-Path $repoRoot "docs\codex_cron_daily_tv_monitor.md" }
 $validateReportScript = Join-Path $repoRoot "scripts\validate_report_format.ps1"
+$validateReportImagesScript = Join-Path $repoRoot "scripts\validate_report_images.ps1"
 $model = if ($env:CODEX_MODEL) { $env:CODEX_MODEL } else { "gpt-5.4" }
 $codexSandbox = if ($env:CODEX_SANDBOX_MODE) { $env:CODEX_SANDBOX_MODE } else { "danger-full-access" }
 $remoteUrl = if ($env:REMOTE_URL) { $env:REMOTE_URL } else { "https://github.com/vdaistrategy03-collab/vdai-daily-monitor.git" }
@@ -315,6 +316,27 @@ function Test-ReportFormat {
     }
     if ($output.Trim().Length -gt 0) {
         Write-RunLog $output.TrimEnd()
+    }
+
+    if (-not (Test-Path $validateReportImagesScript)) {
+        throw "Report image validator not found: $validateReportImagesScript"
+    }
+
+    Write-RunLog ("[{0}] Validating report images." -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"))
+    $quotedReportPaths = ($reportPaths | ForEach-Object { "'{0}'" -f ($_ -replace "'", "''") }) -join " "
+    $imageValidatorArgs = @("& '{0}'" -f ($validateReportImagesScript -replace "'", "''"))
+    if ($env:REPORT_IMAGE_WARNINGS_AS_ERRORS -ne "0") {
+        $imageValidatorArgs += "-TreatWarningsAsErrors"
+    }
+    $imageValidatorArgs += "-Path $quotedReportPaths"
+    $imageValidatorCommand = $imageValidatorArgs -join " "
+    $imageOutput = & powershell -NoProfile -ExecutionPolicy Bypass -Command $imageValidatorCommand 2>&1 | Out-String
+    if ($LASTEXITCODE -ne 0) {
+        Write-RunLog $imageOutput.TrimEnd()
+        throw "Report image validation failed"
+    }
+    if ($imageOutput.Trim().Length -gt 0) {
+        Write-RunLog $imageOutput.TrimEnd()
     }
 }
 

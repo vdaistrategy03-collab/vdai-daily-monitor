@@ -9,6 +9,7 @@ repo_root="$(cd "${script_dir}/.." && pwd)"
 
 codex_bin="${CODEX_BIN:-/Applications/Codex.app/Contents/Resources/codex}"
 prompt_file="${CODEX_PROMPT_FILE:-${repo_root}/docs/codex_cron_daily_tv_monitor.md}"
+validate_report_images_script="${repo_root}/scripts/validate_report_images.ps1"
 model="${CODEX_MODEL:-gpt-5.4}"
 codex_sandbox="${CODEX_SANDBOX_MODE:-workspace-write}"
 log_dir="${CODEX_LOG_DIR:-${repo_root}/logs/cron}"
@@ -121,6 +122,100 @@ esac
 EOF
 
   export GIT_ASKPASS="${askpass_script}"
+}
+
+validate_report_images_with_curl() {
+  local -a files=("$@")
+  local file url headers content_type content_length
+  local failures=0
+  local urls
+
+  for file in "${files[@]}"; do
+    urls="$(sed -nE 's/^[[:space:]]*-[[:space:]]*[^:]+:[[:space:]]+!\[[^]]+\]\((https?:\/\/[^)[:space:]]+)\).*/\1/p' "${file}")"
+    while IFS= read -r url; do
+      [[ -z "${url}" ]] && continue
+
+      if printf '%s' "${url}" | grep -Eiq '(^|[._/-])width[-_=]([1-5]?[0-9]{1,2})([._/-]|$)|[?&](w|width|resize|size)=([1-5]?[0-9]{1,2})([^0-9]|$)|(^|[._/-])(thumb|thumbnail|small|lowres|placeholder)([._/-]|$)'; then
+        printf 'Report image validation failed: likely low-resolution or thumbnail URL in %s: %s\n' "${file}" "${url}" | tee -a "${run_log}" >&2
+        failures=$((failures + 1))
+        continue
+      fi
+
+      if printf '%s' "${url}" | grep -Eiq '(^|[._/-])(favicon|logo|icon|avatar|author|headshot|profile|tracking|pixel|spacer|meta|social|share|default|brand|card|og)([._/-]|$)'; then
+        printf 'Report image validation failed: visually recheck suspicious generic/social image URL in %s: %s\n' "${file}" "${url}" | tee -a "${run_log}" >&2
+        failures=$((failures + 1))
+        continue
+      fi
+
+      if ! headers="$(curl -fsSIL --max-time 20 -L "${url}" 2>&1)"; then
+        printf 'Report image validation failed: could not fetch image URL in %s: %s\n%s\n' "${file}" "${url}" "${headers}" | tee -a "${run_log}" >&2
+        failures=$((failures + 1))
+        continue
+      fi
+
+      content_type="$(printf '%s\n' "${headers}" | awk -F': ' 'tolower($1)=="content-type"{v=$2} END{gsub("\r","",v); print v}')"
+      if [[ "${content_type}" != image/* ]]; then
+        printf 'Report image validation failed: non-image Content-Type in %s: %s (%s)\n' "${file}" "${url}" "${content_type:-none}" | tee -a "${run_log}" >&2
+        failures=$((failures + 1))
+      fi
+
+      content_length="$(printf '%s\n' "${headers}" | awk -F': ' 'tolower($1)=="content-length"{v=$2} END{gsub("\r","",v); print v}')"
+      if [[ "${content_length}" =~ ^[0-9]+$ ]]; then
+        if (( content_length < 1024 )); then
+          printf 'Report image validation failed: image is too small in %s: %s (%s bytes)\n' "${file}" "${url}" "${content_length}" | tee -a "${run_log}" >&2
+          failures=$((failures + 1))
+        elif (( content_length < 60000 )); then
+          printf 'Report image validation failed: image payload is small; visually recheck in %s: %s (%s bytes)\n' "${file}" "${url}" "${content_length}" | tee -a "${run_log}" >&2
+          failures=$((failures + 1))
+        fi
+      fi
+    done <<< "${urls}"
+  done
+
+  return "${failures}"
+}
+
+validate_report_images() {
+  local today latest report ps_bin
+  local -a today_reports
+
+  today="$(date +%F)"
+  latest="${repo_root}/new_features/latest.md"
+
+  shopt -s nullglob
+  today_reports=("${repo_root}/new_features/${today}"*.md)
+  shopt -u nullglob
+
+  if (( ${#today_reports[@]} == 0 )); then
+    printf 'Expected report file not found: %s/new_features/%s*.md\n' "${repo_root}" "${today}" | tee -a "${run_log}" >&2
+    return 1
+  fi
+
+  report="$(ls -t "${today_reports[@]}" | head -n 1)"
+  if [[ ! -f "${latest}" ]]; then
+    printf 'Expected latest report file not found: %s\n' "${latest}" | tee -a "${run_log}" >&2
+    return 1
+  fi
+
+  printf '[%s] Validating report images.\n' "$(date '+%Y-%m-%d %H:%M:%S %Z')" | tee -a "${run_log}"
+  if [[ -f "${validate_report_images_script}" ]]; then
+    if [[ -n "${POWERSHELL_BIN:-}" ]]; then
+      ps_bin="${POWERSHELL_BIN}"
+    elif command -v pwsh >/dev/null 2>&1; then
+      ps_bin="$(command -v pwsh)"
+    elif command -v powershell >/dev/null 2>&1; then
+      ps_bin="$(command -v powershell)"
+    else
+      ps_bin=""
+    fi
+
+    if [[ -n "${ps_bin}" ]]; then
+      "${ps_bin}" -NoProfile -ExecutionPolicy Bypass -File "${validate_report_images_script}" -TreatWarningsAsErrors -Path "${report}" "${latest}" 2>&1 | tee -a "${run_log}"
+      return "${PIPESTATUS[0]}"
+    fi
+  fi
+
+  validate_report_images_with_curl "${report}" "${latest}"
 }
 
 publish_reports() {
@@ -277,6 +372,7 @@ if (( cmd_status != 0 )); then
   exit "${cmd_status}"
 fi
 
+validate_report_images
 publish_reports
 sync_local_checkout_if_only_reports_changed
 

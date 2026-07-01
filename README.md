@@ -55,6 +55,8 @@ The repository includes a launchd-friendly runner:
 
 It calls Codex non-interactively with web search enabled, updates the report files locally, then commits and pushes `new_features/*.md`. Run logs are written under `logs/cron/`, with launchd stdout/stderr under `logs/launchd/`.
 
+Before publishing, the runner validates representative image links so broken URLs, obvious thumbnails, tracking pixels, generic logos, and suspicious social/meta-card images can be caught instead of being shipped in the daily report.
+
 Installed LaunchAgent:
 
 ```bash

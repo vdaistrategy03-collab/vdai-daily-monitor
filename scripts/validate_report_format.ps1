@@ -17,6 +17,7 @@ $requiredSections = @(
 )
 
 $imageQualityEnforcementDate = [datetime]::ParseExact("2026-06-27", "yyyy-MM-dd", [System.Globalization.CultureInfo]::InvariantCulture)
+$strategicIntentEnforcementDate = [datetime]::ParseExact("2026-07-02", "yyyy-MM-dd", [System.Globalization.CultureInfo]::InvariantCulture)
 $lowResolutionImageUrlPatterns = @(
     "(?i)(?:^|[._/-])width[-_=](?:[1-5]?\d{1,2})(?:[._/-]|$)",
     "(?i)[?&](?:w|width|resize|size)=(?:[1-5]?\d{1,2})(?:\D|$)",
@@ -66,13 +67,45 @@ function Test-LowResolutionImageUrl {
     return $false
 }
 
+function Assert-StrategicIntent {
+    param(
+        [string]$FilePath,
+        [string]$FirstLine,
+        [string]$Item,
+        [string]$RelevanceGrade,
+        [string]$ImportanceGrade,
+        [bool]$EnforceStrategicIntent
+    )
+
+    $isTopItem = $RelevanceGrade -eq "상" -and $ImportanceGrade -eq "상"
+    $hasStrategicIntent = $Item -match "(?m)^\s*-\s+전략적 의도\s*$"
+
+    if (-not $isTopItem) {
+        Assert-Condition (-not $hasStrategicIntent) "${FilePath}: $FirstLine has 전략적 의도 but it is only allowed when 관련성 and 중요도 are both 상."
+        return
+    }
+
+    if (-not $hasStrategicIntent) {
+        Assert-Condition (-not $EnforceStrategicIntent) "${FilePath}: $FirstLine is 관련성 상 and 중요도 상, so it must include 전략적 의도 before 인사이트."
+        return
+    }
+
+    $blockMatch = [regex]::Match($Item, "(?ms)^\s*-\s+전략적 의도\s*\r?\n(?<body>.*?)(?=^\s*-\s+인사이트\s*$)")
+    Assert-Condition ($blockMatch.Success) "${FilePath}: $FirstLine must place 전략적 의도 immediately before 인사이트."
+
+    $bodyLines = @(($blockMatch.Groups["body"].Value -split "\r?\n") | Where-Object { $_.Trim().Length -gt 0 })
+    $scenarioMatches = [regex]::Matches($blockMatch.Groups["body"].Value, "(?m)^\s{5,}-\s+[^:\r\n]+:\s+\S.+$")
+    Assert-Condition ($scenarioMatches.Count -ge 1 -and $scenarioMatches.Count -le 3 -and $scenarioMatches.Count -eq $bodyLines.Count) "${FilePath}: $FirstLine 전략적 의도 must contain only 1-3 concise scenario bullets in '[시나리오명]: ...' form."
+}
+
 function Test-AnnouncementSection {
     param(
         [string]$FilePath,
         [string]$SectionName,
         [string]$Body,
         [bool]$RequiresTvReason,
-        [bool]$EnforceImageQuality
+        [bool]$EnforceImageQuality,
+        [bool]$EnforceStrategicIntent
     )
 
     if (Test-EmptyAnnouncementBody -Body $Body) {
@@ -103,8 +136,11 @@ function Test-AnnouncementSection {
             Assert-Condition ($item -match "(?m)^\s*-\s+TV 관련 이유:\s+") "${FilePath}: $firstLine is missing TV 관련 이유."
         }
         Assert-Condition ($item -match "(?m)^\s*-\s+내용:\s+") "${FilePath}: $firstLine is missing 내용."
-        Assert-Condition ($item -match "(?m)^\s*-\s+관련성:\s+(상|중|하)\s+\([^)]+\)\s*$") "${FilePath}: $firstLine is missing a valid 관련성 with a brief parenthetical rationale."
-        Assert-Condition ($item -match "(?m)^\s*-\s+중요도:\s+(상|중|하)\s+\([^)]+\)\s*$") "${FilePath}: $firstLine is missing a valid 중요도 with a brief parenthetical rationale."
+        $relevanceMatch = [regex]::Match($item, "(?m)^\s*-\s+관련성:\s+(?<grade>상|중|하)\s+\([^)]+\)\s*$")
+        $importanceMatch = [regex]::Match($item, "(?m)^\s*-\s+중요도:\s+(?<grade>상|중|하)\s+\([^)]+\)\s*$")
+        Assert-Condition ($relevanceMatch.Success) "${FilePath}: $firstLine is missing a valid 관련성 with a brief parenthetical rationale."
+        Assert-Condition ($importanceMatch.Success) "${FilePath}: $firstLine is missing a valid 중요도 with a brief parenthetical rationale."
+        Assert-StrategicIntent -FilePath $FilePath -FirstLine $firstLine -Item $item -RelevanceGrade $relevanceMatch.Groups["grade"].Value -ImportanceGrade $importanceMatch.Groups["grade"].Value -EnforceStrategicIntent $EnforceStrategicIntent
         Assert-Condition ($item -match "(?m)^\s*-\s+인사이트\s*$") "${FilePath}: $firstLine is missing 인사이트."
         Assert-Condition ($item -match "(?m)^\s*-\s+의미:\s+") "${FilePath}: $firstLine is missing 인사이트/의미."
         Assert-Condition ($item -match "(?m)^\s*-\s+참고할 점:\s+") "${FilePath}: $firstLine is missing 인사이트/참고할 점."
@@ -117,7 +153,8 @@ function Test-AnnouncementSection {
 function Test-AiRegulationSection {
     param(
         [string]$FilePath,
-        [string]$Body
+        [string]$Body,
+        [bool]$EnforceStrategicIntent
     )
 
     if (Test-EmptyAnnouncementBody -Body $Body) {
@@ -139,8 +176,11 @@ function Test-AiRegulationSection {
         Assert-Condition ($item -match "(?m)^\s*-\s+시행/적용 시점:\s+(\d{4}-\d{2}-\d{2}|미정)\s*$") "${FilePath}: $firstLine is missing a valid 시행/적용 시점."
         Assert-Condition ($item -match "(?m)^\s*-\s+영향 범주:\s+") "${FilePath}: $firstLine is missing 영향 범주."
         Assert-Condition ($item -match "(?m)^\s*-\s+내용:\s+") "${FilePath}: $firstLine is missing 내용."
-        Assert-Condition ($item -match "(?m)^\s*-\s+관련성:\s+(상|중|하)\s+\([^)]+\)\s*$") "${FilePath}: $firstLine is missing a valid 관련성 with a brief parenthetical rationale."
-        Assert-Condition ($item -match "(?m)^\s*-\s+중요도:\s+(상|중|하)\s+\([^)]+\)\s*$") "${FilePath}: $firstLine is missing a valid 중요도 with a brief parenthetical rationale."
+        $relevanceMatch = [regex]::Match($item, "(?m)^\s*-\s+관련성:\s+(?<grade>상|중|하)\s+\([^)]+\)\s*$")
+        $importanceMatch = [regex]::Match($item, "(?m)^\s*-\s+중요도:\s+(?<grade>상|중|하)\s+\([^)]+\)\s*$")
+        Assert-Condition ($relevanceMatch.Success) "${FilePath}: $firstLine is missing a valid 관련성 with a brief parenthetical rationale."
+        Assert-Condition ($importanceMatch.Success) "${FilePath}: $firstLine is missing a valid 중요도 with a brief parenthetical rationale."
+        Assert-StrategicIntent -FilePath $FilePath -FirstLine $firstLine -Item $item -RelevanceGrade $relevanceMatch.Groups["grade"].Value -ImportanceGrade $importanceMatch.Groups["grade"].Value -EnforceStrategicIntent $EnforceStrategicIntent
         Assert-Condition ($item -match "(?m)^\s*-\s+인사이트\s*$") "${FilePath}: $firstLine is missing 인사이트."
         Assert-Condition ($item -match "(?m)^\s*-\s+의미:\s+") "${FilePath}: $firstLine is missing 인사이트/의미."
         Assert-Condition ($item -match "(?m)^\s*-\s+참고할 점:\s+") "${FilePath}: $firstLine is missing 인사이트/참고할 점."
@@ -173,7 +213,7 @@ function Test-OtherSection {
         Assert-Condition ($nonEmptyLines.Count -eq 3) "${FilePath}: $firstLine in '기타 항목' must contain only title, 요약, and 출처."
         Assert-Condition ($item -match "(?m)^\s*-\s+요약:\s+관련성\s+(상|중|하)·중요도\s+(상|중|하)\s+-\s+.+$") "${FilePath}: $firstLine is missing 기타 항목 요약 with relevance/importance grades."
         Assert-Condition ($item -match "(?m)^\s*-\s+출처:\s+.*\[.+\]\(https?://.+\)") "${FilePath}: $firstLine must include source links on one 출처 line."
-        Assert-Condition ($item -notmatch "(?m)^\s*-\s+(대표 이미지|상태|발표 시점|분류|내용|TV 관련 이유|인사이트)\s*:?\s*") "${FilePath}: $firstLine in '기타 항목' contains fields reserved for main items."
+        Assert-Condition ($item -notmatch "(?m)^\s*-\s+(대표 이미지|상태|발표 시점|분류|내용|TV 관련 이유|전략적 의도|인사이트)\s*:?\s*") "${FilePath}: $firstLine in '기타 항목' contains fields reserved for main items."
     }
 }
 
@@ -192,6 +232,7 @@ foreach ($inputPath in $Path) {
     $executionDateMatchForRules = [regex]::Match($text, "(?m)^- 실행일:\s+(?<date>\d{4}-\d{2}-\d{2})\s*$")
     $executionDateForRules = [datetime]::ParseExact($executionDateMatchForRules.Groups["date"].Value, "yyyy-MM-dd", [System.Globalization.CultureInfo]::InvariantCulture)
     $enforceImageQuality = $executionDateForRules -ge $imageQualityEnforcementDate
+    $enforceStrategicIntent = $executionDateForRules -ge $strategicIntentEnforcementDate
     if ($executionDateForRules.DayOfWeek -eq [System.DayOfWeek]::Monday) {
         Assert-Condition ($text -match "AI 규제 Tier 2") "${resolvedPath}: Monday reports must explicitly note the AI 규제 Tier 2 weekly sweep."
         Assert-Condition ($text -match "7일") "${resolvedPath}: Monday AI 규제 Tier 2 sweep must mention the 7-day search window."
@@ -207,15 +248,15 @@ foreach ($inputPath in $Path) {
 
     $directBody = Get-SectionBody -Text $text -Section "## 신규 발표 확인 사항"
     Assert-Condition ($null -ne $directBody) "${resolvedPath}: unable to parse 신규 발표 확인 사항."
-    Test-AnnouncementSection -FilePath $resolvedPath -SectionName "신규 발표 확인 사항" -Body $directBody -RequiresTvReason $false -EnforceImageQuality $enforceImageQuality
+    Test-AnnouncementSection -FilePath $resolvedPath -SectionName "신규 발표 확인 사항" -Body $directBody -RequiresTvReason $false -EnforceImageQuality $enforceImageQuality -EnforceStrategicIntent $enforceStrategicIntent
 
     $indirectBody = Get-SectionBody -Text $text -Section "## 간접 서비스"
     Assert-Condition ($null -ne $indirectBody) "${resolvedPath}: unable to parse 간접 서비스."
-    Test-AnnouncementSection -FilePath $resolvedPath -SectionName "간접 서비스" -Body $indirectBody -RequiresTvReason $true -EnforceImageQuality $enforceImageQuality
+    Test-AnnouncementSection -FilePath $resolvedPath -SectionName "간접 서비스" -Body $indirectBody -RequiresTvReason $true -EnforceImageQuality $enforceImageQuality -EnforceStrategicIntent $enforceStrategicIntent
 
     $aiRegulationBody = Get-SectionBody -Text $text -Section "## AI 규제 동향"
     Assert-Condition ($null -ne $aiRegulationBody) "${resolvedPath}: unable to parse AI 규제 동향."
-    Test-AiRegulationSection -FilePath $resolvedPath -Body $aiRegulationBody
+    Test-AiRegulationSection -FilePath $resolvedPath -Body $aiRegulationBody -EnforceStrategicIntent $enforceStrategicIntent
 
     $otherBody = Get-SectionBody -Text $text -Section "## 기타 항목"
     Assert-Condition ($null -ne $otherBody) "${resolvedPath}: unable to parse 기타 항목."

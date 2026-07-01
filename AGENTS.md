@@ -20,6 +20,7 @@ Additionally, monitor newly emerging AI regulation, policy, and enforcement acro
     - `의미:`
     - `참고할 점:`
     - `제안:`
+- If both `관련성` and `중요도` are `상`, add a separate `전략적 의도` field immediately before `인사이트`. Keep it to 1-3 short scenario bullets based on additional history/context research; omit it for all other grade combinations.
 - Exception: if a discovered item has `관련성: 하` or `중요도: 하`, do not place it in the main `신규 발표 확인 사항`, `간접 서비스`, or `AI 규제 동향` sections. Put it under `기타 항목` with only title, one-line summary, and source links.
 
 ## Source Discovery and RSS
@@ -132,6 +133,17 @@ Use strict grading. Do not inflate `관련성` or `중요도` merely because a p
 
 Items with either `관련성: 하` or `중요도: 하` still belong in the report when they are credible and mildly relevant, but they must be placed only in `기타 항목` and summarized briefly.
 
+## Strategic Intent for Top Items
+
+For items graded both `관련성: 상` and `중요도: 상`, do one additional focused research pass before writing the final item. Check prior reports, official announcements, major-media/trade coverage, platform/developer history, rollout sequence, pricing/availability signals, partner ecosystem moves, monetization surfaces, and regulatory or competitive context that can explain why the company is making the move now.
+
+Add `전략적 의도` immediately after `중요도` and before `인사이트`.
+
+- Use 1-3 scenario bullets only. Each bullet should be one concise line in the form `[시나리오명]: [근거 기반 의도 해석]`.
+- Treat the scenarios as grounded inference, not certainty. Avoid overclaiming; indicate uncertainty through wording such as `가능성`, `의도 가능`, or `방어/확장 시나리오`.
+- Reflect this analysis in the existing `인사이트` bullets so `의미`, `참고할 점`, and `제안` become deeper and more action-oriented, while staying brief.
+- Do not add `전략적 의도` to `관련성: 상` + `중요도: 중`, `관련성: 중` + `중요도: 상`, or any item routed to `기타 항목`.
+
 ## AI Regulation Scope
 
 In addition to product/platform announcements, track newly emerging AI regulation, policy, guidance, and enforcement that could affect Samsung TV AI services. Report these under the dedicated `AI 규제 동향` section.
@@ -202,7 +214,8 @@ Image rule:
 
 - For each actual included announcement, try to add a visible `대표 이미지` immediately under the numbered item title.
 - Use a source-page representative image such as `og:image` or `twitter:image` from the official source or a cited major-media source, formatted as Markdown image syntax so it renders inline. Prefer `og:image`/`twitter:image`; if those are unavailable or unsuitable, use the largest candidate from `srcset`/`data-srcset` (preferably 1200px or wider). Never use explicit thumbnail, low-resolution, or placeholder URLs such as `width-100`, `width-200`, `width-300`, `w=300`, `thumbnail`, `thumb`, or `small`; omit the representative image if no suitable high-resolution image is available.
-- Do not use generic logos, icons, tracking pixels, author photos, or unrelated stock images. If no suitable representative image is available, omit `대표 이미지`.
+- Do not use generic logos, icons, tracking pixels, author photos, social-share/meta cards, or unrelated stock images. If no suitable representative image is available, omit `대표 이미지`.
+- Before finishing the report, recheck every `대표 이미지` with `scripts/validate_report_images.ps1` and treat warnings as blockers unless you have visually inspected the image and confirmed it is a relevant product, UI, feature, device, or content image. Replace or omit any image that returns 404/non-image content, looks like a logo/branding card, or cannot be verified.
 - Do not download, transform, or store third-party images in this repository; link to the original image URL.
 
 ```md
@@ -229,6 +242,8 @@ Image rule:
    - 내용: [발표 내용 요약]
    - 관련성: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
    - 중요도: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
+   - 전략적 의도
+     - [관련성·중요도 모두 상인 경우에만 1-3개 시나리오 작성. 그 외에는 이 필드 생략]
    - 인사이트
      - 의미: [삼성 TV 경쟁력 관점의 의미]
      - 참고할 점: [비교/검증/리스크/추적 포인트]
@@ -248,6 +263,8 @@ Image rule:
    - 내용: [발표 내용 요약]
    - 관련성: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
    - 중요도: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
+   - 전략적 의도
+     - [관련성·중요도 모두 상인 경우에만 1-3개 시나리오 작성. 그 외에는 이 필드 생략]
    - 인사이트
      - 의미: [삼성 TV 경쟁력 관점의 의미]
      - 참고할 점: [비교/검증/리스크/추적 포인트]
@@ -267,6 +284,8 @@ Image rule:
    - 내용: [규제 내용 요약]
    - 관련성: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
    - 중요도: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
+   - 전략적 의도
+     - [관련성·중요도 모두 상인 경우에만 1-3개 시나리오 작성. 그 외에는 이 필드 생략]
    - 인사이트
      - 의미: [삼성 TV AI 서비스 관점의 의미]
      - 참고할 점: [비교/검증/리스크/추적 포인트]
@@ -307,7 +326,7 @@ Format rules:
 - Put item sources under that item only, using the `출처` field.
 - Use numbered items only for actual included announcements.
 - Use `- 해당 없음` for empty non-announcement sections.
-- Keep `인사이트` bullets exactly as `의미:`, `참고할 점:`, and `제안:`.
+- Keep `인사이트` bullets exactly as `의미:`, `참고할 점:`, and `제안:`. Put top-item scenario analysis only in the separate `전략적 의도` field, not as an extra `인사이트` bullet.
 
 Classification guide:
 
@@ -330,7 +349,9 @@ Classification guide:
 4. Investigate meaningful monitor/projector announcements, and relevant indirect Google/Amazon items within that dynamic window.
 5. Investigate AI regulation per the `AI Regulation Scope` section: run the four search themes (T1–T4) against Tier 1 jurisdictions every run. Every Monday, also run the Tier 2 sweep across the preceding 7 days ending at the report 기준 시각, even if the normal report search window is shorter or longer. Keep only items that pass the Samsung TV AI service relevance checklist and tag each with `영향 범주`.
 6. Grade relevance and importance strictly. If either score is `하`, route the item to `기타 항목` with only title, one-line summary, and source links.
-7. Write the report in Korean with explicit source attribution per item.
-8. If there are no qualifying items in a section, write `해당 없음` only under that section.
-9. Stop after updating the local markdown files.
-10. Do not commit or push from this repository. Git operations are handled by a separate local process outside this run.
+7. For any item graded both `관련성: 상` and `중요도: 상`, perform the `Strategic Intent for Top Items` research pass, add `전략적 의도`, and deepen the `인사이트` bullets accordingly.
+8. Write the report in Korean with explicit source attribution per item.
+9. If there are no qualifying items in a section, write `해당 없음` only under that section.
+10. Run `scripts/validate_report_format.ps1` and `scripts/validate_report_images.ps1 -TreatWarningsAsErrors` against the generated daily report and `new_features/latest.md`; fix every format error, broken image URL, low-resolution URL, and suspicious logo/social-card warning before stopping. If a warned image is actually appropriate after visual inspection, prefer replacing it with a clearer source image; keep it only when no better source-page image exists.
+11. Stop after updating and validating the local markdown files.
+12. Do not commit or push from this repository. Git operations are handled by a separate local process outside this run.
