@@ -141,7 +141,8 @@ For items graded both `관련성: 상` and `중요도: 상`, do one additional f
 
 Add `전략적 의도` immediately after `중요도` and before `인사이트`.
 
-- Use 1-3 scenario bullets only. Each bullet should be one concise line in the form `[시나리오명]: [근거 기반 의도 해석]`.
+- Use 1-3 scenario bullets only. Each bullet should use the form `[시나리오명]: [근거 기반 의도 해석]`.
+- Make each scenario easy to understand without external context: briefly connect the observed fact, likely intent, and competitive implication in one fuller bullet. One or two short sentences on the same bullet line are acceptable when needed for clarity.
 - Treat the scenarios as grounded inference, not certainty. Avoid overclaiming; indicate uncertainty through wording such as `가능성`, `의도 가능`, or `방어/확장 시나리오`.
 - Reflect this analysis in the existing `인사이트` bullets so `의미`, `참고할 점`, and `제안` become deeper and more action-oriented, while staying brief.
 - Do not add `전략적 의도` to `관련성: 상` + `중요도: 중`, `관련성: 중` + `중요도: 상`, or any item routed to `기타 항목`.
@@ -219,6 +220,14 @@ Content style rule:
 - Avoid connected prose and full sentence endings such as `판매를 시작했다`, `적용하기 시작했다`, `확인됐다`, or `예고했다` unless needed for clarity.
 - Keep each bullet focused on one fact: source/basis, core change, model/market scope, rollout or follow-up condition.
 
+Insight style rule:
+
+- Write `인사이트` values as short scenario sentences, not over-compressed noun phrases and not long explanatory paragraphs.
+- Keep the labels exactly as `의미:`, `참고할 점:`, and `제안:`, but make the text after each label readable as one brief action-oriented sentence fragment.
+- End each `인사이트` line with report-style nominal wording such as `가능성 있음`, `변수로 보임`, `추적 필요`, `점검 필요`, or `비교 필요`.
+- Avoid full sentence endings such as `있다`, `한다`, `보인다`, `필요가 있다`, or `확인해야 한다`.
+- Keep each insight focused on one strategic point: implication, watch point, and recommended follow-up. Avoid packing multiple unrelated actions into one bullet.
+
 Image rule:
 
 - For each actual included announcement, try to add a visible `대표 이미지` immediately under the numbered item title.
@@ -257,9 +266,9 @@ Image rule:
    - 전략적 의도
      - [관련성·중요도 모두 상인 경우에만 1-3개 시나리오 작성. 그 외에는 이 필드 생략]
    - 인사이트
-     - 의미: [삼성 TV 경쟁력 관점의 의미]
-     - 참고할 점: [비교/검증/리스크/추적 포인트]
-     - 제안: [실행 가능한 대응 제안]
+     - 의미: [삼성 TV 경쟁력 관점의 명사형 의미 요약]
+     - 참고할 점: [비교/검증/리스크/추적 포인트 명사형 요약]
+     - 제안: [실행 가능한 대응 제안 명사형 요약]
    - 출처
      - [출처명](URL)
      - [출처명](URL)
@@ -281,9 +290,9 @@ Image rule:
    - 전략적 의도
      - [관련성·중요도 모두 상인 경우에만 1-3개 시나리오 작성. 그 외에는 이 필드 생략]
    - 인사이트
-     - 의미: [삼성 TV 경쟁력 관점의 의미]
-     - 참고할 점: [비교/검증/리스크/추적 포인트]
-     - 제안: [실행 가능한 대응 제안]
+     - 의미: [삼성 TV 경쟁력 관점의 명사형 의미 요약]
+     - 참고할 점: [비교/검증/리스크/추적 포인트 명사형 요약]
+     - 제안: [실행 가능한 대응 제안 명사형 요약]
    - 출처
      - [출처명](URL)
      - [출처명](URL)
@@ -305,9 +314,9 @@ Image rule:
    - 전략적 의도
      - [관련성·중요도 모두 상인 경우에만 1-3개 시나리오 작성. 그 외에는 이 필드 생략]
    - 인사이트
-     - 의미: [삼성 TV AI 서비스 관점의 의미]
-     - 참고할 점: [비교/검증/리스크/추적 포인트]
-     - 제안: [실행 가능한 대응 제안]
+     - 의미: [삼성 TV AI 서비스 관점의 명사형 의미 요약]
+     - 참고할 점: [비교/검증/리스크/추적 포인트 명사형 요약]
+     - 제안: [실행 가능한 대응 제안 명사형 요약]
    - 출처
      - [출처명](URL)
      - [출처명](URL)

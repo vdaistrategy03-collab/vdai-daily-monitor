@@ -96,7 +96,7 @@ function Assert-StrategicIntent {
 
     $bodyLines = @(($blockMatch.Groups["body"].Value -split "\r?\n") | Where-Object { $_.Trim().Length -gt 0 })
     $scenarioMatches = [regex]::Matches($blockMatch.Groups["body"].Value, "(?m)^\s{5,}-\s+[^:\r\n]+:\s+\S.+$")
-    Assert-Condition ($scenarioMatches.Count -ge 1 -and $scenarioMatches.Count -le 3 -and $scenarioMatches.Count -eq $bodyLines.Count) "${FilePath}: $FirstLine 전략적 의도 must contain only 1-3 concise scenario bullets in '[시나리오명]: ...' form."
+    Assert-Condition ($scenarioMatches.Count -ge 1 -and $scenarioMatches.Count -le 3 -and $scenarioMatches.Count -eq $bodyLines.Count) "${FilePath}: $FirstLine 전략적 의도 must contain only 1-3 scenario bullets in '[시나리오명]: ...' form."
 }
 
 function Assert-ContentField {

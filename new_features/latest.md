@@ -26,13 +26,13 @@
    - 관련성: 상 (RGB 미니LED·초대형 경쟁)
    - 중요도: 상 (실판매 개시·미국영국 확장)
    - 전략적 의도
-     - [RGB 차별화]: 기존 미니LED에서 RGB 백라이트 서사를 앞세워 삼성 Neo QLED·LG QNED와 구분하려는 가능성
-     - [초대형 점유율]: 55~100형 동시 전개와 100형 확대 지속으로 북미 대형 화면 수요를 선점하려는 시나리오
-     - [플랫폼 다변화]: 미국 Google TV·Fire TV, 유럽 Vidaa 병행으로 지역별 유통·콘텐츠 접점을 넓히려는 의도 가능
+     - [RGB 차별화]: Hisense는 일반 미니LED보다 설명하기 쉬운 RGB 백라이트를 앞세워 삼성 Neo QLED·LG QNED와 다른 기술 축이라는 인식을 만들려는 가능성이 있다.
+     - [초대형 점유율]: 55~100형을 동시에 전개하고 100형 모델을 확대한 것은 북미·영국의 대형 화면 교체 수요를 가격과 크기로 먼저 잡으려는 확장 시나리오로 보인다.
+     - [플랫폼 다변화]: 미국에서는 Google TV·Fire TV, 유럽에서는 Vidaa를 병행해 지역별 유통사와 콘텐츠 접점을 맞추고 하드웨어 외 OS 접점까지 넓히려는 의도 가능성이 있다.
    - 인사이트
-     - 의미: RGB 계열 LCD가 75형 이상 프리미엄 구간까지 내려오면서 삼성 Neo QLED와 초대형 라인업에 직접적인 비교 압박이 생긴다.
-     - 참고할 점: 실제 존 수, 피크 밝기, 리테일 가격, Dolby Vision 2 업데이트 시점에 따라 체감 경쟁력과 마케팅 메시지가 달라질 수 있다.
-     - 제안: 북미·유럽 75형 이상 구간에서 Hisense·TCL·삼성의 밝기·반사·게이밍·OS 조합 비교표를 갱신하고 RGB 계열 메시지 대응을 점검할 필요가 있다.
+     - 의미: 75형 이상 프리미엄 구간에서 RGB LCD가 삼성 Neo QLED와 직접 비교되는 장면이 늘어날 가능성 있음
+     - 참고할 점: 실제 존 수, 피크 밝기, 리테일 가격, Dolby Vision 2 업데이트 시점이 체감 경쟁력의 핵심 변수로 보임
+     - 제안: 북미·유럽 75형 이상 구간에서 Hisense·TCL·삼성의 밝기, 반사, 게이밍, OS 조합 재비교 필요
    - 출처
      - [FlatpanelsHD](https://www.flatpanelshd.com/news.php?subaction=showfull&id=1783312512)
      - [Hisense 65-inch UR9 Series RGB MiniLED 4K Google TV](https://www.hisense-usa.com/product-page/televisions-65-class-ur9-series-rgb-miniled-4k-google-tv-65ur9sg)
@@ -50,9 +50,9 @@
    - 관련성: 중 (Apple TV 콘텐츠 경쟁력)
    - 중요도: 중 (구매 라이브러리 가치 확대)
    - 인사이트
-     - 의미: Apple TV 하드웨어와 앱 생태계의 디지털 소장 가치 제안이 강화돼 거실 콘텐츠 플랫폼 경쟁에서 화질 업그레이드가 재구매 유인으로 작동할 수 있다.
-     - 참고할 점: 현재는 49개 TV 쇼와 4K SDR 중심의 초기 확대라 대상 국가, HDR·Dolby Vision 확장, 삼성 TV용 Apple TV 앱 반영 속도를 추가 확인해야 한다.
-     - 제안: 삼성 TV 내 Apple TV 앱 사용 패턴과 구매형 콘텐츠 시청 비중을 점검하고 자사 콘텐츠 제휴·보너스 혜택 메시지와의 비교 우위를 점검할 필요가 있다.
+     - 의미: Apple TV가 구매형 콘텐츠의 장기 가치를 높이면 거실 콘텐츠 플랫폼의 충성도 경쟁이 강화될 수 있음
+     - 참고할 점: 대상 국가, HDR·Dolby Vision 확장, 삼성 TV용 Apple TV 앱 반영 속도 추적 필요
+     - 제안: 삼성 TV 내 Apple TV 앱 사용 패턴과 구매형 콘텐츠 시청 비중을 자사 콘텐츠 혜택 메시지와 비교 필요
    - 출처
      - [FlatpanelsHD](https://www.flatpanelshd.com/news.php?subaction=showfull&id=1783335028)
      - [9to5Mac](https://9to5mac.com/2026/07/06/apple-starts-offering-free-4k-upgrades-for-purchased-tv-shows/)
