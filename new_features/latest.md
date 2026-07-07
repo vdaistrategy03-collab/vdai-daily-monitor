@@ -18,7 +18,11 @@
    - 상태: **공식 확인**
    - 발표 시점: 2026-07-06
    - 분류: 하드웨어
-   - 내용: FlatpanelsHD와 Hisense 제품 페이지 기준으로 Hisense의 2026년 TV 라인업이 미국·영국 등에서 판매를 시작했다. UR9S·UR8S 플래그십은 RGB-miniLED를 적용했고, U7S Pro·U7S·U6S·E8S·E7·A 시리즈까지 55~100형 중심으로 전개된다. 유럽은 Vidaa, 미국은 Google TV 또는 Fire TV를 채택하며 UR9S·UR8S는 연내 Dolby Vision 2 소프트웨어 업데이트 대상이다.
+   - 내용
+     - FlatpanelsHD·Hisense 제품 페이지 기준 2026년 TV 라인업 미국·영국 판매 시작
+     - UR9S·UR8S 플래그십 RGB-miniLED 적용
+     - U7S Pro·U7S·U6S·E8S·E7·A 시리즈 55~100형 중심 전개
+     - 유럽 Vidaa, 미국 Google TV 또는 Fire TV 채택 및 UR9S·UR8S Dolby Vision 2 연내 업데이트 대상
    - 관련성: 상 (RGB 미니LED·초대형 경쟁)
    - 중요도: 상 (실판매 개시·미국영국 확장)
    - 전략적 의도
@@ -39,7 +43,10 @@
    - 상태: **주요 매체 확인**
    - 발표 시점: 2026-07-06
    - 분류: 콘텐츠
-   - 내용: FlatpanelsHD와 9to5Mac에 따르면 Apple이 Apple TV 앱에서 구매한 TV 쇼 일부에 무료 4K SDR 업그레이드를 적용하기 시작했다. 첫 대상은 49개 타이틀이며 미국·영국 등에서 확인됐고, Apple이 2017년부터 영화 구매분에 제공해온 4K/HDR 무료 업그레이드 정책을 TV 쇼로 확대한 흐름이다.
+   - 내용
+     - Apple TV 앱 구매 TV 쇼 일부 무료 4K SDR 업그레이드 적용 시작
+     - 첫 대상 49개 타이틀, 미국·영국 등 확인
+     - 2017년 영화 구매분 4K/HDR 무료 업그레이드 정책의 TV 쇼 확장 흐름
    - 관련성: 중 (Apple TV 콘텐츠 경쟁력)
    - 중요도: 중 (구매 라이브러리 가치 확대)
    - 인사이트

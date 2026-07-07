@@ -113,6 +113,8 @@ Prioritize:
 
 Also include indirect but relevant Google/Amazon launches when they could extend to TV, living-room commerce/media, or smart-home control. Smart-home hub devices such as Google Home Speaker and Amazon Echo are qualifying indirect items when they introduce new AI capabilities (e.g. Gemini integration, on-device reasoning, multi-step commands) that extend to TV voice control or smart-home orchestration competing with Samsung SmartThings and Tizen-based integrations.
 
+Broaden Google/Amazon AI tracking beyond TV-branded announcements. Core consumer-facing Gemini or Alexa AI capabilities qualify as indirect-service candidates when there is a plausible path to TV, living-room, smart-home, media, personalization, or commerce use cases, even if the article does not explicitly mention Google TV, Android TV, Fire TV, or Echo Show. Examples include persistent user memory/preferences, multimodal voice/vision understanding, image/video generation or editing, content summarization/translation, media search and recommendation, multi-step AI agent actions, on-device or edge AI, smart-home orchestration, and shopping/advertising personalization. If the TV/living-room path is explicit or strategically strong, place the item under `간접 서비스`; if the path is plausible but weak, place it under `기타 항목` with `관련성: 하` or `중요도: 하`; if it is enterprise/API/model-benchmark/coding/workspace-only news with no consumer assistant or living-room path, exclude it.
+
 For all prioritized TV makers and TV platforms, include major platform, UX, ecosystem, and developer-facing updates when they materially affect TV competitiveness, even if they are not consumer hardware launches. Treat these as `신규 발표 확인 사항` when they are directly about a TV platform, TV OS, TV device family, TV app ecosystem, or TV usage model. This includes updates from official developer blogs, partner blogs, SDK documentation, app distribution guidance, major trade media, and product support channels when the impact is strategically meaningful.
 
 Examples of qualifying platform/UX updates include TV OS or home-screen changes, app discovery surfaces, search/recommendation systems, FAST/content rows, advertising or commerce surfaces, account/profile changes, remote-control input, pointer or motion input, D-pad/focus model changes, voice/AI assistant behavior, gaming/cloud gaming hubs, casting/second-screen flows, accessibility features, security/privacy requirements, app certification requirements, SDK/API changes, app store or distribution policy changes, entitlement/resume/watch-next/recommendation APIs, and smart-home control surfaces. Do not limit this rule to Google TV; apply the same judgment to Tizen, webOS, Roku OS, Fire TV, tvOS/Apple TV, Android TV/Google TV, VIDAA, TiVo/Sharp/Philips/TP Vision platforms, and other strategically relevant TV software layers.
@@ -210,6 +212,13 @@ Summary rule:
 - Do not describe where there were no updates, which sources were checked, or the search process in `## 요약`; reserve that detail for `## 확인했으나 업데이트가 없었던 곳` and `## 불확실성 및 검증 공백`.
 - If there are no qualifying items, write one concise bullet saying that no qualifying announcements were found in the search window.
 
+Content style rule:
+
+- Write every `내용` field as a list block, not as one long sentence. Use `- 내용` followed by 2-4 short bullets.
+- Prefer concise noun-style or headline-style endings such as `판매 시작`, `무료 업그레이드 적용`, `미국·영국 확인`, `하반기 업데이트 예고`.
+- Avoid connected prose and full sentence endings such as `판매를 시작했다`, `적용하기 시작했다`, `확인됐다`, or `예고했다` unless needed for clarity.
+- Keep each bullet focused on one fact: source/basis, core change, model/market scope, rollout or follow-up condition.
+
 Image rule:
 
 - For each actual included announcement, try to add a visible `대표 이미지` immediately under the numbered item title.
@@ -239,7 +248,10 @@ Image rule:
    - 상태: **공식 확인** | **주요 매체 확인** | **미확인**
    - 발표 시점: YYYY-MM-DD
    - 분류: 소프트웨어 | 하드웨어 | TV 플랫폼/UX | 콘텐츠 | 커머스 | 스마트홈 | 규제/인증 | 기타
-   - 내용: [발표 내용 요약]
+   - 내용
+     - [핵심 변화: 명사형/요약형으로 작성]
+     - [대상·범위: 모델, 지역, 사용자, 플랫폼 등]
+     - [후속 조건: 업데이트, 일정, 검증 포인트 등]
    - 관련성: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
    - 중요도: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
    - 전략적 의도
@@ -260,7 +272,10 @@ Image rule:
    - 발표 시점: YYYY-MM-DD
    - 분류: 소프트웨어 | 하드웨어 | TV 플랫폼/UX | 콘텐츠 | 커머스 | 스마트홈 | 기타
    - TV 관련 이유: [TV 화면 경험, 거실 미디어/커머스, 스마트홈 제어와의 연결성]
-   - 내용: [발표 내용 요약]
+   - 내용
+     - [핵심 변화: 명사형/요약형으로 작성]
+     - [TV 확장 경로: 거실, 미디어, 스마트홈, 커머스 등]
+     - [대상·범위 또는 후속 조건]
    - 관련성: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
    - 중요도: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
    - 전략적 의도
@@ -281,7 +296,10 @@ Image rule:
    - 진행 단계: 입법예고 | 통과 | 시행 | 가이드라인 | 집행/제재
    - 시행/적용 시점: YYYY-MM-DD | 미정
    - 영향 범주: [콘텐츠 추천 / 생성형 UI / 광고 / 음성·멀티모달 등 영향받는 삼성 TV AI 서비스 범주를 태그]
-   - 내용: [규제 내용 요약]
+   - 내용
+     - [규제 핵심: 명사형/요약형으로 작성]
+     - [적용 대상·범위]
+     - [시행 일정·리스크 또는 후속 확인점]
    - 관련성: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
    - 중요도: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
    - 전략적 의도
@@ -346,7 +364,7 @@ Classification guide:
    - Do **not** use a fixed 24-hour window.
    - This is to backfill possible misses when a prior run had partial search failures.
 3. Investigate direct TV announcements first, including platform, developer, input/navigation, discovery/recommendation, AI assistant, app ecosystem, and TV OS updates from all prioritized TV makers and platforms when they affect the TV experience.
-4. Investigate meaningful monitor/projector announcements, and relevant indirect Google/Amazon items within that dynamic window.
+4. Investigate meaningful monitor/projector announcements, relevant indirect Google/Amazon items, and core consumer-facing Gemini/Alexa AI capability launches that could plausibly extend to TV, living-room media, smart-home control, personalization, or commerce within that dynamic window.
 5. Investigate AI regulation per the `AI Regulation Scope` section: run the four search themes (T1–T4) against Tier 1 jurisdictions every run. Every Monday, also run the Tier 2 sweep across the preceding 7 days ending at the report 기준 시각, even if the normal report search window is shorter or longer. Keep only items that pass the Samsung TV AI service relevance checklist and tag each with `영향 범주`.
 6. Grade relevance and importance strictly. If either score is `하`, route the item to `기타 항목` with only title, one-line summary, and source links.
 7. For any item graded both `관련성: 상` and `중요도: 상`, perform the `Strategic Intent for Top Items` research pass, add `전략적 의도`, and deepen the `인사이트` bullets accordingly.
