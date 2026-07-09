@@ -26,8 +26,6 @@
    - 중요도: 상 (미국·영국 실판매 확대)
    - 인사이트
      - 의미: 삼성이 OLED를 한정 플래그십이 아니라 폭넓은 주력군으로 전개하면서 프리미엄 TV 포트폴리오 재편 속도가 빨라질 가능성 있음
-     - 참고할 점: 지역별 패널 혼용, S82H·S83H 출시 범위, S90H 무광 전환이 체감 화질·원가·리테일 메시지 변수로 보임
-     - 제안: 북미·유럽 OLED 라인업의 패널 타입, 무광 선호도, Art Store 사용성 데이터를 Neo QLED와 함께 재점검 필요
    - 출처
      - [FlatpanelsHD](https://www.flatpanelshd.com/news.php?id=1783503629&subaction=showfull)
      - [Samsung 2026 OLED TV Highlights](https://www.samsung.com/us/televisions-home-theater/tvs/oled-tvs/2026-oled-tv-highlights/)
