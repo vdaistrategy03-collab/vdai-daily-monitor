@@ -75,11 +75,17 @@ function Assert-StrategicIntent {
         [string]$Item,
         [string]$RelevanceGrade,
         [string]$ImportanceGrade,
-        [bool]$EnforceStrategicIntent
+        [bool]$EnforceStrategicIntent,
+        [bool]$IsSamsungElectronicsItem
     )
 
     $isTopItem = $RelevanceGrade -eq "상" -and $ImportanceGrade -eq "상"
     $hasStrategicIntent = $Item -match "(?m)^\s*-\s+전략적 의도\s*$"
+
+    if ($IsSamsungElectronicsItem) {
+        Assert-Condition (-not $hasStrategicIntent) "${FilePath}: $FirstLine is a direct Samsung Electronics item, so it must omit 전략적 의도 and use 인사이트/의미 only."
+        return
+    }
 
     if (-not $isTopItem) {
         Assert-Condition (-not $hasStrategicIntent) "${FilePath}: $FirstLine has 전략적 의도 but it is only allowed when 관련성 and 중요도 are both 상."
@@ -97,6 +103,12 @@ function Assert-StrategicIntent {
     $bodyLines = @(($blockMatch.Groups["body"].Value -split "\r?\n") | Where-Object { $_.Trim().Length -gt 0 })
     $scenarioMatches = [regex]::Matches($blockMatch.Groups["body"].Value, "(?m)^\s{5,}-\s+[^:\r\n]+:\s+\S.+$")
     Assert-Condition ($scenarioMatches.Count -ge 1 -and $scenarioMatches.Count -le 3 -and $scenarioMatches.Count -eq $bodyLines.Count) "${FilePath}: $FirstLine 전략적 의도 must contain only 1-3 scenario bullets in '[시나리오명]: ...' form."
+}
+
+function Test-SamsungElectronicsItem {
+    param([string]$FirstLine)
+
+    return $FirstLine -match "^\d+\.\s+\*\*(Samsung|삼성전자|삼성):"
 }
 
 function Assert-ContentField {
@@ -142,6 +154,7 @@ function Test-AnnouncementSection {
     foreach ($match in $matches) {
         $item = $match.Value
         $firstLine = (($item -split "\r?\n") | Select-Object -First 1).Trim()
+        $isSamsungElectronicsItem = Test-SamsungElectronicsItem -FirstLine $firstLine
 
         if ($item -match "(?m)^\s*-\s+대표 이미지:") {
             $imageMatch = [regex]::Match($item, "(?m)^\s*-\s+대표 이미지:\s+!\[[^\]]+\]\((?<url>https?://[^)\s]+)\)")
@@ -162,11 +175,16 @@ function Test-AnnouncementSection {
         $importanceMatch = [regex]::Match($item, "(?m)^\s*-\s+중요도:\s+(?<grade>상|중|하)\s+\([^)]+\)\s*$")
         Assert-Condition ($relevanceMatch.Success) "${FilePath}: $firstLine is missing a valid 관련성 with a brief parenthetical rationale."
         Assert-Condition ($importanceMatch.Success) "${FilePath}: $firstLine is missing a valid 중요도 with a brief parenthetical rationale."
-        Assert-StrategicIntent -FilePath $FilePath -FirstLine $firstLine -Item $item -RelevanceGrade $relevanceMatch.Groups["grade"].Value -ImportanceGrade $importanceMatch.Groups["grade"].Value -EnforceStrategicIntent $EnforceStrategicIntent
+        Assert-StrategicIntent -FilePath $FilePath -FirstLine $firstLine -Item $item -RelevanceGrade $relevanceMatch.Groups["grade"].Value -ImportanceGrade $importanceMatch.Groups["grade"].Value -EnforceStrategicIntent $EnforceStrategicIntent -IsSamsungElectronicsItem $isSamsungElectronicsItem
         Assert-Condition ($item -match "(?m)^\s*-\s+인사이트\s*$") "${FilePath}: $firstLine is missing 인사이트."
         Assert-Condition ($item -match "(?m)^\s*-\s+의미:\s+") "${FilePath}: $firstLine is missing 인사이트/의미."
-        Assert-Condition ($item -match "(?m)^\s*-\s+참고할 점:\s+") "${FilePath}: $firstLine is missing 인사이트/참고할 점."
-        Assert-Condition ($item -match "(?m)^\s*-\s+제안:\s+") "${FilePath}: $firstLine is missing 인사이트/제안."
+        if ($isSamsungElectronicsItem) {
+            Assert-Condition ($item -notmatch "(?m)^\s*-\s+참고할 점:\s+") "${FilePath}: $firstLine is a direct Samsung Electronics item, so omit 인사이트/참고할 점."
+            Assert-Condition ($item -notmatch "(?m)^\s*-\s+제안:\s+") "${FilePath}: $firstLine is a direct Samsung Electronics item, so omit 인사이트/제안."
+        } else {
+            Assert-Condition ($item -match "(?m)^\s*-\s+참고할 점:\s+") "${FilePath}: $firstLine is missing 인사이트/참고할 점."
+            Assert-Condition ($item -match "(?m)^\s*-\s+제안:\s+") "${FilePath}: $firstLine is missing 인사이트/제안."
+        }
         Assert-Condition ($item -match "(?m)^\s*-\s+출처\s*$") "${FilePath}: $firstLine is missing 출처."
         Assert-Condition ($item -match "(?m)^\s*-\s+\[.+\]\(https?://.+\)") "${FilePath}: $firstLine must include at least one source link under 출처."
     }
@@ -203,7 +221,7 @@ function Test-AiRegulationSection {
         $importanceMatch = [regex]::Match($item, "(?m)^\s*-\s+중요도:\s+(?<grade>상|중|하)\s+\([^)]+\)\s*$")
         Assert-Condition ($relevanceMatch.Success) "${FilePath}: $firstLine is missing a valid 관련성 with a brief parenthetical rationale."
         Assert-Condition ($importanceMatch.Success) "${FilePath}: $firstLine is missing a valid 중요도 with a brief parenthetical rationale."
-        Assert-StrategicIntent -FilePath $FilePath -FirstLine $firstLine -Item $item -RelevanceGrade $relevanceMatch.Groups["grade"].Value -ImportanceGrade $importanceMatch.Groups["grade"].Value -EnforceStrategicIntent $EnforceStrategicIntent
+        Assert-Condition ($item -notmatch "(?m)^\s*-\s+전략적 의도\s*$") "${FilePath}: $firstLine is an AI regulation item, so it must omit 전략적 의도."
         Assert-Condition ($item -match "(?m)^\s*-\s+인사이트\s*$") "${FilePath}: $firstLine is missing 인사이트."
         Assert-Condition ($item -match "(?m)^\s*-\s+의미:\s+") "${FilePath}: $firstLine is missing 인사이트/의미."
         Assert-Condition ($item -match "(?m)^\s*-\s+참고할 점:\s+") "${FilePath}: $firstLine is missing 인사이트/참고할 점."

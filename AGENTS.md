@@ -16,11 +16,12 @@ Additionally, monitor newly emerging AI regulation, policy, and enforcement acro
 - Every confirmed direct TV/monitor/projector item and every included indirect Google/Amazon item must include:
   - `관련성: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)`
   - `중요도: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)`
-  - `인사이트` with exactly these bullets:
+  - `인사이트` with these bullets for non-Samsung items:
     - `의미:`
     - `참고할 점:`
     - `제안:`
-- If both `관련성` and `중요도` are `상`, add a separate `전략적 의도` field immediately before `인사이트`. Keep it to 1-3 short scenario bullets based on additional history/context research; omit it for all other grade combinations.
+- Exception: for direct Samsung Electronics / Samsung TV items, do not infer `전략적 의도` even when both `관련성` and `중요도` are `상`. Under `인사이트`, write only `의미:` and omit `참고할 점:` and `제안:`.
+- If both `관련성` and `중요도` are `상` for a non-Samsung, non-regulation product/platform/service item, add a separate `전략적 의도` field immediately before `인사이트`. Keep it to 1-3 short scenario bullets based on additional history/context research; omit it for all other grade combinations, direct Samsung Electronics / Samsung TV items, and all `AI 규제 동향` items.
 - Exception: if a discovered item has `관련성: 하` or `중요도: 하`, do not place it in the main `신규 발표 확인 사항`, `간접 서비스`, or `AI 규제 동향` sections. Put it under `기타 항목` with only title, one-line summary, and source links.
 
 ## Source Discovery and RSS
@@ -139,6 +140,10 @@ Items with either `관련성: 하` or `중요도: 하` still belong in the repor
 
 For items graded both `관련성: 상` and `중요도: 상`, do one additional focused research pass before writing the final item. Check prior reports, official announcements, major-media/trade coverage, platform/developer history, rollout sequence, pricing/availability signals, partner ecosystem moves, monetization surfaces, and regulatory or competitive context that can explain why the company is making the move now.
 
+Samsung Electronics exception: do not add `전략적 의도` to direct Samsung Electronics / Samsung TV items, even when both `관련성` and `중요도` are `상`. Treat these as internal-company updates; avoid speculative intent framing and write only the `인사이트` / `의미:` line.
+
+AI regulation exception: do not add `전략적 의도` to `AI 규제 동향` items, even when both `관련성` and `중요도` are `상`. Regulations should be analyzed through obligations, risks, and response implications in `인사이트`, not inferred regulator intent.
+
 Add `전략적 의도` immediately after `중요도` and before `인사이트`.
 
 - Use 1-3 scenario bullets only. Each bullet should use the form `[시나리오명]: [근거 기반 의도 해석]`.
@@ -146,6 +151,8 @@ Add `전략적 의도` immediately after `중요도` and before `인사이트`.
 - Treat the scenarios as grounded inference, not certainty. Avoid overclaiming; indicate uncertainty through wording such as `가능성`, `의도 가능`, or `방어/확장 시나리오`.
 - Reflect this analysis in the existing `인사이트` bullets so `의미`, `참고할 점`, and `제안` become deeper and more action-oriented, while staying brief.
 - Do not add `전략적 의도` to `관련성: 상` + `중요도: 중`, `관련성: 중` + `중요도: 상`, or any item routed to `기타 항목`.
+- Do not add `전략적 의도` to direct Samsung Electronics / Samsung TV items; use only `인사이트` / `의미:` for those items.
+- Do not add `전략적 의도` to `AI 규제 동향` items; use `인사이트` to explain obligation, risk, and response meaning.
 
 ## AI Regulation Scope
 
@@ -223,7 +230,7 @@ Content style rule:
 Insight style rule:
 
 - Write `인사이트` values as short scenario sentences, not over-compressed noun phrases and not long explanatory paragraphs.
-- Keep the labels exactly as `의미:`, `참고할 점:`, and `제안:`, but make the text after each label readable as one brief action-oriented sentence fragment.
+- Keep the labels exactly as `의미:`, `참고할 점:`, and `제안:` for non-Samsung items, but make the text after each label readable as one brief action-oriented sentence fragment.
 - End each `인사이트` line with report-style nominal wording such as `가능성 있음`, `변수로 보임`, `추적 필요`, `점검 필요`, or `비교 필요`.
 - Avoid full sentence endings such as `있다`, `한다`, `보인다`, `필요가 있다`, or `확인해야 한다`.
 - Keep each insight focused on one strategic point: implication, watch point, and recommended follow-up. Avoid packing multiple unrelated actions into one bullet.
@@ -311,8 +318,6 @@ Image rule:
      - [시행 일정·리스크 또는 후속 확인점]
    - 관련성: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
    - 중요도: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)
-   - 전략적 의도
-     - [관련성·중요도 모두 상인 경우에만 1-3개 시나리오 작성. 그 외에는 이 필드 생략]
    - 인사이트
      - 의미: [삼성 TV AI 서비스 관점의 명사형 의미 요약]
      - 참고할 점: [비교/검증/리스크/추적 포인트 명사형 요약]
@@ -353,7 +358,8 @@ Format rules:
 - Put item sources under that item only, using the `출처` field.
 - Use numbered items only for actual included announcements.
 - Use `- 해당 없음` for empty non-announcement sections.
-- Keep `인사이트` bullets exactly as `의미:`, `참고할 점:`, and `제안:`. Put top-item scenario analysis only in the separate `전략적 의도` field, not as an extra `인사이트` bullet.
+- For non-Samsung items, keep `인사이트` bullets exactly as `의미:`, `참고할 점:`, and `제안:`. Put top-item scenario analysis only in the separate `전략적 의도` field, not as an extra `인사이트` bullet.
+- For direct Samsung Electronics / Samsung TV items, keep only `인사이트` / `의미:` and omit `참고할 점:` and `제안:`.
 
 Classification guide:
 
@@ -376,7 +382,7 @@ Classification guide:
 4. Investigate meaningful monitor/projector announcements, relevant indirect Google/Amazon items, and core consumer-facing Gemini/Alexa AI capability launches that could plausibly extend to TV, living-room media, smart-home control, personalization, or commerce within that dynamic window.
 5. Investigate AI regulation per the `AI Regulation Scope` section: run the four search themes (T1–T4) against Tier 1 jurisdictions every run. Every Monday, also run the Tier 2 sweep across the preceding 7 days ending at the report 기준 시각, even if the normal report search window is shorter or longer. Keep only items that pass the Samsung TV AI service relevance checklist and tag each with `영향 범주`.
 6. Grade relevance and importance strictly. If either score is `하`, route the item to `기타 항목` with only title, one-line summary, and source links.
-7. For any item graded both `관련성: 상` and `중요도: 상`, perform the `Strategic Intent for Top Items` research pass, add `전략적 의도`, and deepen the `인사이트` bullets accordingly.
+7. For any non-Samsung, non-regulation product/platform/service item graded both `관련성: 상` and `중요도: 상`, perform the `Strategic Intent for Top Items` research pass, add `전략적 의도`, and deepen the `인사이트` bullets accordingly. For direct Samsung Electronics / Samsung TV items, omit `전략적 의도` and write only `인사이트` / `의미:`. For `AI 규제 동향` items, always omit `전략적 의도` and explain obligation, risk, and response meaning through `인사이트`.
 8. Write the report in Korean with explicit source attribution per item.
 9. If there are no qualifying items in a section, write `해당 없음` only under that section.
 10. Run `scripts/validate_report_format.ps1` and `scripts/validate_report_images.ps1 -TreatWarningsAsErrors` against the generated daily report and `new_features/latest.md`; fix every format error, broken image URL, low-resolution URL, and suspicious logo/social-card warning before stopping. If a warned image is actually appropriate after visual inspection, prefer replacing it with a clearer source image; keep it only when no better source-page image exists.
