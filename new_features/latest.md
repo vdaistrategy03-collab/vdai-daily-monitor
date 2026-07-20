@@ -8,7 +8,7 @@
 
 ## 요약
 
-- EU AI 투명성 가이드 공개, TV 생성형 UI 고지 압박 확대
+- EU Article 50 최종 가이드 확정, 5월 초안의 적용 해석 공식화
 - Fire TV Adaptive Display 롤아웃 확인, 접근성 기반 TV UX 경쟁 신호
 
 ## 신규 발표 확인 사항
@@ -38,22 +38,22 @@
 
 ## AI 규제 동향
 
-1. **EU: AI Act 제50조 투명성 가이드 공개**
+1. **EU: AI Act Article 50 최종 투명성 가이드 확정**
    - 상태: **공식 확인**
    - 관할: EU
    - 진행 단계: 가이드라인
    - 시행/적용 시점: 2026-08-02
    - 영향 범주: 콘텐츠/UI, 에이전트/OS
    - 내용
-     - Article 50 적용 범위와 투명성 의무 공식 해설 공개
-     - 직접 상호작용 AI 고지, AI 생성·조작 콘텐츠 기계판독 표식, 딥페이크·공익 텍스트 라벨 기준 구체화
-     - 8월 2일 적용 임박, 일부 기존 생성형 AI 시스템 관련 12월 유예 설명 병기, 제품별 해석 추적 필요
+     - 5월 8일 공개 초안과 의견수렴을 거쳐 7월 20일 최종 가이드 채택·공식 게시
+     - 7월 8~9일 투명성 코드 적정성 판단을 보완하는 법적 해석으로 적용 주체·시스템, 예외, 직접 상호작용·표식·라벨 범위 확정
+     - Article 50 의무와 8월 2일 적용 일정은 기존 공지 사항이며, 이번 신규성은 초안의 최종 확정과 제품별 적용 판단 기준 공식화
    - 관련성: 상 (TV 생성형 UI·음성 접점)
    - 중요도: 상 (EU 적용 임박)
    - 인사이트
-     - 의미: EU 판매 TV의 생성형 UI·요약·번역·대화형 AI에 고지·표식 설계 반영 압박 확대 가능성 있음
-     - 참고할 점: 직접 상호작용 고지와 synthetic content marking 범위 해석이 TV별 기능 노출면 구현 변수로 보임
-     - 제안: EU향 TV AI 기능별 라벨·메타데이터·사용자 고지 플로우를 제품·법무 공동 점검 필요
+     - 의미: 새로운 의무 신설보다 5월 초안이 최종 해석으로 확정돼 EU TV 기능별 적용 판단의 불확실성이 축소될 가능성 있음
+     - 참고할 점: 7월 9일 투명성 코드 보도와 겹치는 표식 의무보다 최종 가이드의 적용 대상·예외·사례 변화 확인 필요
+     - 제안: 5월 초안 대비 최종본 변경점과 TV 기능별 적용·예외 매핑을 중심으로 제품·법무 공동 diff 점검 필요
    - 출처
      - [European Commission Policy Page](https://digital-strategy.ec.europa.eu/en/policies/guidelines-transparency-ai-generated-content)
      - [European Commission Library](https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems)
