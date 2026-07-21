@@ -1,11 +1,29 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+function Get-KstNow {
+    $timeZone = $null
+    foreach ($timeZoneId in @("Korea Standard Time", "Asia/Seoul")) {
+        try {
+            $timeZone = [System.TimeZoneInfo]::FindSystemTimeZoneById($timeZoneId)
+            break
+        } catch {
+        }
+    }
+
+    if (-not $timeZone) {
+        throw "Unable to resolve the Korea Standard Time time zone."
+    }
+
+    return [System.TimeZoneInfo]::ConvertTime([DateTimeOffset]::UtcNow, $timeZone)
+}
+
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = Resolve-Path (Join-Path $scriptDir "..")
 $repoRoot = $repoRoot.Path
 $logDir = if ($env:CODEX_LOG_DIR) { $env:CODEX_LOG_DIR } else { Join-Path $repoRoot "logs\cron" }
-$timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+$retryStartedAtKst = Get-KstNow
+$timestamp = $retryStartedAtKst.ToString("yyyy-MM-dd_HH-mm-ss", [System.Globalization.CultureInfo]::InvariantCulture)
 $retryLog = Join-Path $logDir "retry_$timestamp.log"
 $mainScript = Join-Path $scriptDir "run_daily_report.ps1"
 $lockFile = Join-Path ([System.IO.Path]::GetTempPath()) "vdai-daily-monitor-cron.lock"
@@ -18,7 +36,7 @@ function Write-RetryLog {
 }
 
 function Test-TodaysRunSucceeded {
-    $todayPrefix = "run_{0}_" -f (Get-Date -Format "yyyy-MM-dd")
+    $todayPrefix = "run_{0}_" -f ((Get-KstNow).ToString("yyyy-MM-dd", [System.Globalization.CultureInfo]::InvariantCulture))
     $todayLogs = Get-ChildItem -Path $logDir -Filter "$todayPrefix*.log" -ErrorAction SilentlyContinue |
         Sort-Object LastWriteTime -Descending
 

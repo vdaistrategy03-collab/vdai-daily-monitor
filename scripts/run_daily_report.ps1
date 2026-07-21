@@ -1,15 +1,35 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+function Get-KstNow {
+    $timeZone = $null
+    foreach ($timeZoneId in @("Korea Standard Time", "Asia/Seoul")) {
+        try {
+            $timeZone = [System.TimeZoneInfo]::FindSystemTimeZoneById($timeZoneId)
+            break
+        } catch {
+        }
+    }
+
+    if (-not $timeZone) {
+        throw "Unable to resolve the Korea Standard Time time zone."
+    }
+
+    return [System.TimeZoneInfo]::ConvertTime([DateTimeOffset]::UtcNow, $timeZone)
+}
+
 $env:TZ = if ($env:TZ) { $env:TZ } else { "Asia/Seoul" }
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoRoot = Resolve-Path (Join-Path $scriptDir "..")
 $repoRoot = $repoRoot.Path
+$runStartedAtKst = Get-KstNow
+$reportDate = $runStartedAtKst.ToString("yyyy-MM-dd", [System.Globalization.CultureInfo]::InvariantCulture)
+$runStartedAtKstText = $runStartedAtKst.ToString("yyyy-MM-dd HH:mm:ss 'KST'", [System.Globalization.CultureInfo]::InvariantCulture)
 
 $logDir = if ($env:CODEX_LOG_DIR) { $env:CODEX_LOG_DIR } else { Join-Path $repoRoot "logs\cron" }
 New-Item -ItemType Directory -Force -Path $logDir | Out-Null
-$timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+$timestamp = $runStartedAtKst.ToString("yyyy-MM-dd_HH-mm-ss", [System.Globalization.CultureInfo]::InvariantCulture)
 $runLog = Join-Path $logDir "run_$timestamp.log"
 
 function Write-RunLog {
@@ -48,7 +68,8 @@ $codexBin = Resolve-CodexBinary
 $promptFile = if ($env:CODEX_PROMPT_FILE) { $env:CODEX_PROMPT_FILE } else { Join-Path $repoRoot "docs\codex_cron_daily_tv_monitor.md" }
 $validateReportScript = Join-Path $repoRoot "scripts\validate_report_format.ps1"
 $validateReportImagesScript = Join-Path $repoRoot "scripts\validate_report_images.ps1"
-$model = if ($env:CODEX_MODEL) { $env:CODEX_MODEL } else { "gpt-5.4" }
+$validateReportContextScript = Join-Path $repoRoot "scripts\validate_report_context.ps1"
+$model = if ($env:CODEX_MODEL) { $env:CODEX_MODEL } else { "gpt-5.6-terra" }
 $codexSandbox = if ($env:CODEX_SANDBOX_MODE) { $env:CODEX_SANDBOX_MODE } else { "danger-full-access" }
 $remoteUrl = if ($env:REMOTE_URL) { $env:REMOTE_URL } else { "https://github.com/vdaistrategy03-collab/vdai-daily-monitor.git" }
 $branch = if ($env:BRANCH) { $env:BRANCH } else { "main" }
@@ -279,21 +300,65 @@ function Invoke-CodexExecWithRetry {
     return $lastStatus
 }
 
+function Get-PublishedReportBasis {
+    $publishedLatest = & $gitBin -C $repoRoot show "origin/${branch}:new_features/latest.md" 2>$null | Out-String
+    if ($LASTEXITCODE -ne 0 -or -not $publishedLatest.Trim()) {
+        return "unavailable - do not use unpublished local artifacts as the search baseline"
+    }
+
+    $basisTimeField = -join @([char]0xAE30, [char]0xC900, [char]0x20, [char]0xC2DC, [char]0xAC01)
+    $pattern = '(?m)^- {0}:\s+(?<value>.+?)\s*$' -f [regex]::Escape($basisTimeField)
+    $match = [regex]::Match($publishedLatest, $pattern)
+    if (-not $match.Success) {
+        return "unavailable - origin/$branch latest.md has no basis-time metadata"
+    }
+
+    return $match.Groups["value"].Value
+}
+
 function Test-ReportFormat {
-    $today = Get-Date -Format "yyyy-MM-dd"
-    $todayReports = @(Get-ChildItem -Path (Join-Path $repoRoot "new_features") -Filter "$today*.md" -ErrorAction SilentlyContinue |
+    $todayReports = @(Get-ChildItem -Path (Join-Path $repoRoot "new_features") -Filter "$reportDate*.md" -ErrorAction SilentlyContinue |
         Where-Object { $_.Name -ne "latest.md" } |
         Sort-Object LastWriteTime -Descending)
     if ($todayReports.Count -eq 0) {
-        throw "Expected report file not found: $repoRoot\new_features\$today*.md"
-    }
-    if ($todayReports.Count -gt 1) {
-        Write-RunLog ("[{0}] Multiple report files found for {1}; validating newest: {2}" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"), $today, $todayReports[0].Name)
+        throw "Expected report file not found: $repoRoot\new_features\$reportDate*.md"
     }
 
-    $todayReport = $todayReports[0].FullName
     $latestReport = Join-Path $repoRoot "new_features\latest.md"
+    if (-not (Test-Path $latestReport)) {
+        throw "Expected report file not found: $latestReport"
+    }
+
+    $latestHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $latestReport).Hash
+    $matchingTodayReports = @($todayReports | Where-Object {
+        (Get-FileHash -Algorithm SHA256 -LiteralPath $_.FullName).Hash -eq $latestHash
+    })
+    if ($matchingTodayReports.Count -eq 0) {
+        throw "latest.md is not an exact copy of any $reportDate daily report."
+    }
+    if ($matchingTodayReports.Count -gt 1) {
+        throw "latest.md matches multiple $reportDate daily reports; keep exactly one authoritative daily report."
+    }
+
+    $todayReport = $matchingTodayReports[0].FullName
     $reportPaths = @($todayReport, $latestReport)
+
+    if (-not (Test-Path $validateReportContextScript)) {
+        throw "Report context validator not found: $validateReportContextScript"
+    }
+
+    Write-RunLog ("[{0}] Validating report date and copy consistency." -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"))
+    $contextOutput = & powershell -NoProfile -ExecutionPolicy Bypass -File $validateReportContextScript `
+        -ExpectedDate $reportDate `
+        -DailyReport $todayReport `
+        -LatestReport $latestReport 2>&1 | Out-String
+    if ($LASTEXITCODE -ne 0) {
+        Write-RunLog $contextOutput.TrimEnd()
+        throw "Report date/copy validation failed"
+    }
+    if ($contextOutput.Trim().Length -gt 0) {
+        Write-RunLog $contextOutput.TrimEnd()
+    }
 
     if (-not (Test-Path $validateReportScript)) {
         throw "Report format validator not found: $validateReportScript"
@@ -338,10 +403,17 @@ function Test-ReportFormat {
     if ($imageOutput.Trim().Length -gt 0) {
         Write-RunLog $imageOutput.TrimEnd()
     }
+
+    return $todayReport
 }
 
 function Publish-Reports {
-    $commitMessage = "Daily TV monitor: $(Get-Date -Format yyyy-MM-dd)"
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$DailyReport
+    )
+
+    $commitMessage = "Daily TV monitor: $reportDate"
 
     New-Item -ItemType Directory -Force -Path $gitDir, $workDir | Out-Null
     Import-GitHubAuth
@@ -376,11 +448,21 @@ function Publish-Reports {
 
     $reportDest = Join-Path $workDir "new_features"
     New-Item -ItemType Directory -Force -Path $reportDest | Out-Null
-    $reportFiles = @(Get-ChildItem -Path (Join-Path $repoRoot "new_features") -Filter "*.md")
-    if ($reportFiles.Count -eq 0) {
-        throw "No report files found under $repoRoot\new_features."
+
+    $resolvedWorkDir = [System.IO.Path]::GetFullPath($workDir).TrimEnd([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar)
+    $resolvedReportDest = [System.IO.Path]::GetFullPath($reportDest)
+    if (-not $resolvedReportDest.StartsWith($resolvedWorkDir + [System.IO.Path]::DirectorySeparatorChar, [System.StringComparison]::OrdinalIgnoreCase)) {
+        throw "Refusing to update report destination outside temporary worktree: $resolvedReportDest"
     }
-    Copy-Item -Path $reportFiles.FullName -Destination $reportDest -Force
+
+    $existingDateReports = @(Get-ChildItem -LiteralPath $reportDest -Filter "$reportDate*.md" -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.Name -ne "latest.md" })
+    foreach ($existingDateReport in $existingDateReports) {
+        Remove-Item -LiteralPath $existingDateReport.FullName -Force
+    }
+
+    Copy-Item -LiteralPath $DailyReport -Destination $reportDest -Force
+    Copy-Item -LiteralPath (Join-Path $repoRoot "new_features\latest.md") -Destination $reportDest -Force
 
     Push-Location $workDir
     try {
@@ -481,8 +563,29 @@ try {
     Write-RunLog "sandbox=$codexSandbox"
     Write-RunLog "codex_max_attempts=$codexMaxAttempts"
     Write-RunLog "codex_timeout_minutes=$codexTimeoutMinutes"
+    Write-RunLog "authoritative_kst_time=$runStartedAtKstText"
+    Write-RunLog "authoritative_report_date=$reportDate"
+    $publishedReportBasis = Get-PublishedReportBasis
+    Write-RunLog "authoritative_published_report_basis=$publishedReportBasis"
 
     $prompt = Get-Content -Path $promptFile -Raw -Encoding UTF8
+    $prompt += @"
+
+
+# Wrapper 제공 자동 실행 컨텍스트 (최우선)
+
+- 권위 있는 현재 시각: $runStartedAtKstText
+- 권위 있는 리포트 실행일: $reportDate
+- 권위 있는 직전 게시 리포트 기준 시각: $publishedReportBasis
+- 반드시 생성할 일자 파일: new_features/$reportDate.md 또는 new_features/${reportDate}_요약.md
+- 반드시 함께 갱신할 파일: new_features/latest.md
+- 이전 리포트의 날짜, 웹 검색 결과의 날짜, UTC 날짜를 오늘 날짜로 재해석하지 않는다.
+- 동적 검색 구간은 위 직전 게시 리포트 기준 시각부터 현재 KST 시각까지로 잡는다. 로컬 수정·미추적 일자 파일과 실패 실행이 남긴 latest.md는 게시 이력이 아니므로 검색 시작점을 앞당기는 근거로 사용하지 않는다.
+- `실행일`, `실행 시각`, `기준 시각`은 위 KST 실행일을 사용한다. UTC 시각에 `KST`를 붙이지 않는다.
+- 이번 실행에서는 $reportDate 이외 날짜의 new_features 일자 파일을 생성하거나 수정하지 않는다. 기존 파일은 중복 확인용 읽기 전용이다.
+- latest.md는 이번에 생성한 $reportDate 일자 파일과 바이트 단위로 동일해야 한다.
+- 이 컨텍스트와 기존 파일 내용이 충돌하면 이 컨텍스트를 따른다.
+"@
     $cmdStatus = Invoke-CodexExecWithRetry -Prompt $prompt
 
     Write-RunLog ("[{0}] Finished with exit code {1}." -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"), $cmdStatus)
@@ -490,8 +593,8 @@ try {
         exit $cmdStatus
     }
 
-    Test-ReportFormat
-    Publish-Reports
+    $dailyReport = Test-ReportFormat
+    Publish-Reports -DailyReport $dailyReport
     Sync-LocalCheckoutIfOnlyReportsChanged
     exit 0
 } catch {
