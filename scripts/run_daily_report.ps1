@@ -306,14 +306,17 @@ function Get-PublishedReportBasis {
         return "unavailable - do not use unpublished local artifacts as the search baseline"
     }
 
-    $basisTimeField = -join @([char]0xAE30, [char]0xC900, [char]0x20, [char]0xC2DC, [char]0xAC01)
-    $pattern = '(?m)^- {0}:\s+(?<value>.+?)\s*$' -f [regex]::Escape($basisTimeField)
-    $match = [regex]::Match($publishedLatest, $pattern)
-    if (-not $match.Success) {
+    # Native git output can be decoded with the active Windows code page in Windows
+    # PowerShell. Match timestamp-shaped metadata values instead of Korean field labels.
+    $matches = [regex]::Matches(
+        $publishedLatest,
+        '(?m)^-[^:\r\n]+:\s+(?<value>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}\s+KST)\s*$'
+    )
+    if ($matches.Count -eq 0) {
         return "unavailable - origin/$branch latest.md has no basis-time metadata"
     }
 
-    return $match.Groups["value"].Value
+    return $matches[$matches.Count - 1].Groups["value"].Value
 }
 
 function Test-ReportFormat {

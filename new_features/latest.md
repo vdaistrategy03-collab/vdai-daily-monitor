@@ -8,7 +8,6 @@
 
 ## 요약
 
-- EU AI Act 제50조 투명성 가이드 공개, TV 생성형 UI·음성 고지 기준 구체화
 - LG OLED evo Prime Video 화질 모드·음성 딥링크 도입, 콘텐츠 제휴 UX 경쟁 확대
 
 ## 신규 발표 확인 사항
@@ -37,25 +36,7 @@
 
 ## AI 규제 동향
 
-1. **EU: AI Act Article 50 투명성 의무 가이드라인 공개**
-   - 상태: **공식 확인**
-   - 관할: EU
-   - 진행 단계: 가이드라인
-   - 시행/적용 시점: 2026-08-02
-   - 영향 범주: 콘텐츠/UI, 에이전트/OS
-   - 내용
-     - AI 시스템 제공자·배포자의 Article 50 투명성 의무 적용 대상과 범위 공식 해설 공개
-     - 직접 상호작용 AI 고지, AI 생성·조작 콘텐츠의 기계판독 표식, 딥페이크·공익 관련 생성 콘텐츠 라벨링 기준 제시
-     - EU AI Act 투명성 의무 8월 2일 적용 예정, TV 기능별 예외·배포자 역할의 세부 매핑 필요
-   - 관련성: 상 (생성형 UI·음성 AI 접점)
-   - 중요도: 상 (EU 적용 임박)
-   - 인사이트
-     - 의미: EU 판매 TV의 생성형 UI·요약·번역·AI 대화 화면에 고지와 기계판독 표식 설계 반영 압박 확대 가능성 있음
-     - 참고할 점: 직접 상호작용 고지와 생성·조작 콘텐츠 표식의 적용 주체·예외가 모델 공급자와 TV 서비스 배포자 간 책임 배분 변수로 보임
-     - 제안: EU향 TV AI 기능별 생성 결과 노출면, 음성·멀티모달 고지, 콘텐츠 출처 메타데이터 지원 여부 공동 점검 필요
-   - 출처
-     - [European Commission 뉴스](https://digital-strategy.ec.europa.eu/en/news/commission-publishes-guidelines-transparency-obligations-providers-and-deployers-certain-ai-systems)
-     - [European Commission Article 50 Q&A](https://digital-strategy.ec.europa.eu/en/policies/guidelines-transparency-ai-generated-content)
+- 해당 없음
 
 ## 기타 항목
 
@@ -96,9 +77,11 @@
      - [Google Products & Platforms](https://blog.google/products-and-platforms/)
      - [Amazon Devices and Services](https://www.aboutamazon.com/what-we-do/devices-services)
 
-- **미국·한국·영국·중국 AI 규제**
-  - FTC·CPPA·PIPC·KISA·MSIT·ICO·DSIT·CAC를 T1~T4 테마로 확인한 결과, EU 가이드 외 삼성 TV AI 서비스 범주와 직접 연결되는 신규 규제·가이드라인·집행 발표 미확인
+- **AI 규제 Tier 1**
+  - EU AI Office·European Commission, FTC·CPPA·PIPC·KISA·MSIT·ICO·DSIT·CAC를 T1~T4 테마로 확인한 결과, 전날 반영한 EU Article 50 최종 가이드 외 삼성 TV AI 서비스 범주와 직접 연결되는 신규 규제·가이드라인·집행 발표 미확인
   - 출처
+     - [EU AI Office](https://digital-strategy.ec.europa.eu/en/policies/ai-office)
+     - [European Commission Digital Strategy](https://digital-strategy.ec.europa.eu/en)
      - [FTC Press Releases](https://www.ftc.gov/news-events/news/press-releases)
      - [California Privacy Protection Agency Announcements](https://cppa.ca.gov/announcements/)
      - [개인정보보호위원회](https://www.pipc.go.kr/)
