@@ -1,20 +1,30 @@
 # 삼성전자 VD AI 규제 소스 카탈로그
 
 - 기준일: 2026-07-14 KST
+- 최근 보완: 2026-08-06 KST — 자동 실행 주기 연결, 중국 AI 단말 지능화 등급 공통표준 및 TV 파트 상태 추가
 - 목적: 삼성 TV의 음성·멀티모달, 추천·개인화, 생성형 AI, AI 생성물 표시, 아동보호, 광고, 접근성, 온디바이스 AI 및 데이터 처리에 영향을 줄 수 있는 공식 규제 원문을 조문 단위로 수집·변경 추적
 - 범위: EU, 영국, 미국 연방·CA·CO·TX·UT·IL·WA, 한국, 중국, 일본과 우선 판매시장인 캐나다·호주·인도·브라질·싱가포르·인도네시아·태국·베트남·필리핀·말레이시아·UAE·사우디아라비아·멕시코·남아공·튀르키예
-- URL 검증: 고유 URL 233개를 전수 GET 검사한 뒤 오류 URL을 교체하고 추가 URL을 재확인함(최종 241개). 404·500·부적절한 홈페이지 redirect는 삭제·교체했고, WAF·bot 차단 URL은 공식 검색 결과의 기관·문서번호·제목과 canonical 페이지를 별도 대조함. 세션형 파일은 안정적인 landing page를 함께 기록
+- URL 검증 이력: 2026-07-14 기준 고유 URL 233개를 전수 GET 검사한 뒤 오류 URL을 교체하고 추가 URL을 재확인함(당시 241개). 이후 추가 URL은 반영 시 공식 페이지를 개별 재확인. 404·500·부적절한 홈페이지 redirect는 삭제·교체하고, WAF·bot 차단 URL은 공식 검색 결과의 기관·문서번호·제목과 canonical 페이지를 별도 대조. 세션형 파일은 안정적인 landing page를 함께 기록
 
 > 이 문서는 제품 법무 판단서가 아니라 수집 소스 카탈로그다. `직접`은 일반적인 Samsung TV 제품·서비스 설계에 적용 가능성이 높은 경우, `조건부`는 해당 기능·사업자 규모·서비스 유형 또는 역외 적용 요건을 충족할 때만 적용되는 경우다. 실제 적용 여부는 기능별 데이터 흐름과 현지 법인의 역할을 기준으로 재판정해야 한다.
 
 ## 수집 우선순위와 표기
 
-- `P0`: 일일 변경 감지와 조문 스냅샷이 모두 필요한 직접 규제
-- `P1`: 주 1회 통합본 확인, 입법·가이드 변경은 일일 감지할 조건부 규제
-- `P2`: 제안·자율 지침 또는 간접 규제. 입법 상태와 버전만 추적
+- `P0`: 모니터링 URL은 매일 변경 감지하고, 신규·변경 신호 시 공식 조문·버전·변경이력을 즉시 재검토하며 월요일에 통합 원문과 메타데이터를 전체 재확인하는 직접 규제
+- `P1`: 뉴스·상태·색인 페이지는 매일 변경 신호를 감지하고, 월요일에 통합 원문·가이드의 공식 버전·변경이력을 전체 재확인하는 조건부 규제
+- `P2`: 제안·자율 지침 또는 간접 규제. 뉴스·상태 변경 신호는 매일 감지하고 전체 입법 상태·버전은 매월 확인
 - `HTML diff`: 공식 HTML 본문을 정규화한 뒤 조·항별 해시 비교
 - `PDF diff`: 원본 PDF를 증거본으로 보존하고 텍스트/레이아웃 추출본을 별도 비교
 - `XML/API`: 공식 구조화 원문을 우선 수집하고 HTML/PDF는 표시·증거용으로 병행
+
+## 자동 실행 연계
+
+- `AGENTS.md`와 `docs/codex_cron_daily_tv_monitor.md`는 이 카탈로그를 매 실행 읽도록 규정. `P0`·`P1` 뉴스·상태·색인 URL은 매일, 공식 통합 원문·버전·변경이력은 월요일 전체 확인. `P2` 변경 신호는 매일, 전체 상태는 매월 첫 성공 실행에 확인. 놓친 주기는 마지막 완료 시점부터 다음 성공 실행까지 무공백으로 이월
+- 신뢰할 수 있는 이전 snapshot 또는 fingerprint가 실제로 있을 때만 `diff 완료`라고 기록. 그렇지 않으면 공식 버전·개정일·시행일·change history를 확인해 baseline/metadata 검토로 기록하고, 원문 변경 없음으로 단정하지 않음
+- 이 문서의 `기준일`과 상태 설명은 수집 기준 스냅샷이며 현재 상태를 보장하지 않음. 매 실행은 그날 예정된 모니터링 URL과 새 후보의 공식 공포·발표·시행·유예·폐지·입법 단계 필드를 확인하고, 주간·월간 전체 원문 검사는 위 주기에 따라 수행해 리포트 기준 시각의 상태를 사용
+- 현지어 공식 원문을 우선하며 영어 요약이나 번역 검색만으로 완료 처리하지 않음. 실패·차단·stale 소스는 대체 공식 페이지 또는 `site:` 검색 후 상태를 기록하고, 완료하지 못한 필수 소스는 다음 성공 실행으로 이월
+- TV·기기 전용 표준, 지능화 등급, 인증, 시험·적합성평가 변화는 `신규 발표 확인 사항`의 `규제/인증` 후보로 전달. 광범위한 AI 법률·서비스 규칙·집행만 `AI 규제 동향` 후보로 전달
+- `正在批准`, `征求意见`, `통과`, `공포`, `시행`을 구분하며, 프레임워크 시행과 개별 TV 파트 또는 민간 인증 프로그램 시행을 같은 사건으로 표현하지 않음
 
 ## EU
 
@@ -111,7 +121,7 @@
 
 | 법령명 | 공식 원문 | 모니터링 URL | 상태·시행일 | TV 관련성·적용 | 조문 구조 | 수집 방식 |
 |---|---|---|---|---|---|---|
-| **P0 — 인공지능 발전과 신뢰 기반 조성 등에 관한 기본법** | [국가법령정보센터 현행본](https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=&chrClsCd=010202&efYd=20260122&lsiSeq=282791&urlMode=lsInfoP) (HTML·본문 다운로드) | [과기정통부 보도자료](https://www.msit.go.kr/bbs/list.do?sCode=user&mPid=112&mId=113), [국가법령정보센터](https://www.law.go.kr/) | 법률 제21311호, 2026-01-20 일부개정·2026-01-22 시행. 제35조제1항 후단 등 2026-07-21 시행 예정 조항은 future version으로 분리 | **매우 직접.** 제31조 고영향·생성형 AI 사전고지·생성물 표시, 제32조 대규모 AI 안전의무, 제33조 고영향 해당 여부 확인, 제34조 고영향 AI 위험관리·설명·인적감독·문서화와 역외 적용이 TV 생성형 UI·음성·영상 기능에 영향 | 장–절–조–항–호–목. 예: `제31조제2항`, 부칙의 시행일도 별도 provision으로 저장 | **HTML 조문 파싱 + HWP/PDF 보존 + 법령 연혁 diff** |
+| **P0 — 인공지능 발전과 신뢰 기반 조성 등에 관한 기본법** | [국가법령정보센터 현행본](https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=&chrClsCd=010202&efYd=20260122&lsiSeq=282791&urlMode=lsInfoP) (HTML·본문 다운로드) | [과기정통부 보도자료](https://www.msit.go.kr/bbs/list.do?sCode=user&mPid=112&mId=113), [국가법령정보센터](https://www.law.go.kr/) | 법률 제21311호, 2026-01-20 일부개정. 2026-01-22 1차 시행 후 제35조제1항 후단 등 잔여 개정 조항까지 2026-07-21 시행 중 | **매우 직접.** 제31조 고영향·생성형 AI 사전고지·생성물 표시, 제32조 대규모 AI 안전의무, 제33조 고영향 해당 여부 확인, 제34조 고영향 AI 위험관리·설명·인적감독·문서화와 역외 적용이 TV 생성형 UI·음성·영상 기능에 영향 | 장–절–조–항–호–목. 예: `제31조제2항`, 부칙의 시행일도 별도 provision으로 저장 | **HTML 조문 파싱 + HWP/PDF 보존 + 법령 연혁 diff** |
 | **P0 — 인공지능 발전과 신뢰 기반 조성 등에 관한 기본법 시행령** | [국가법령정보센터 현행본](https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=0&chrClsCd=010202&efYd=20260122&lsiSeq=282879&urlMode=lsInfoP) (HTML·본문 다운로드) | [과기정통부 보도자료](https://www.msit.go.kr/bbs/list.do?sCode=user&mPid=112&mId=113), [국가법령정보센터](https://www.law.go.kr/) | 2026-01-22 시행 중 | **매우 직접.** 법 제31조의 고지·표시 방법, 고영향 AI 판단·확인, 안전성 의무의 세부 기준을 구체화하여 TV UI·watermark·metadata 구현의 1차 집행 기준 | 장–조–항–호–목 + 별표·서식. 법률 위임조항과 양방향 연결 | **HTML 조문/별표 파싱 + 첨부파일 보존 + 연혁 diff** |
 | **P0 — 인공지능 투명성 확보 가이드라인** | [NIA 공식 current landing·2026-01-27 수정 PDF](https://www.nia.or.kr/site/nia_kor/ex/bbs/View.do?bcIdx=28987&cbIdx=99835&parentSeq=28987) (HTML+PDF) | [과기정통부 공식 발표](https://www.msit.go.kr/eng/bbs/view.do?bbsSeqNo=42&mId=4&mPid=2&nttSeqNo=1215&sCode=eng), [과기정통부 보도자료](https://www.msit.go.kr/bbs/list.do?sCode=user&mPid=112&mId=113) | 2026-01-22 공개·2026-01-27 수정본 게시. 비구속 해설이지만 법 제31조 준수기준; 정부가 최소 1년의 사실조사·과태료 유예 방침 발표 | **매우 직접.** 서비스 내부 출력은 UI·시각 표시, 외부 반출은 사람 인식 표지 또는 사전 음성/문자 고지 후 machine-readable metadata, deepfake는 명확한 가시 표시. 한국 이용자 대상 해외사업자도 포함 | 법 조항이 아닌 장·절·사례·Q&A 구조. heading/page/paragraph ID와 연결 법조문을 함께 저장 | **PDF heading·페이지 파싱 + landing·발표 HTML diff** |
 | **P0 — 개인정보 보호법 및 개인정보 보호법 시행령** | [법률 현행본](https://www.law.go.kr/법령/개인정보보호법) (HTML), [시행령 현행본](https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=286175) (HTML) | [개인정보위 보도자료](https://www.pipc.go.kr/np/default/page.do?mCode=C020010000), [개인정보위 안내서](https://pipc.go.kr/np/cop/bbs/selectBoardList.do?bbsId=BS217&etc1=%ED%98%84%EC%9E%AC+%EC%95%88%EB%82%B4%EC%84%9C&mCode=G010030020) | 시행 중; 통합 현행본과 개정 시행일을 국가법령정보센터에서 관리 | **매우 직접.** TV 음성·영상·생체·시청/광고 데이터의 처리근거·국외이전·아동·안전조치, 법 제37조의2와 영 제44조의2–제44조의4의 자동화된 중대결정 권리. 일반 콘텐츠 추천은 중대한 권리·의무 영향 여부를 따로 판단 | 법률/시행령 각각 장–절–조–항–호–목 + 별표. 위임관계를 별도 edge로 저장 | **HTML 조문 파싱 + 연혁 diff + PIPC HTML 감시** |
@@ -127,7 +137,9 @@
 | **P0 — 生成式人工智能服务管理暂行办法 (생성형 AI 서비스 관리 잠정방법)** | [CAC 공식 원문](https://www.cac.gov.cn/2023-07/13/c_1690898327029107.htm) (HTML) | [CAC 部门规章](https://www.cac.gov.cn/wxzw/zcfg/bmgz/A09370303index_1.htm), [생성형 AI 서비스备案 공지](https://www.cac.gov.cn/) | 2023-08-15 시행 중 | **매우 직접.** 중국 대중에게 제공하는 TV 생성형 assistant·콘텐츠 생성에 학습데이터·개인정보·출력안전·신고·표시, 기존 알고리즘 filing/assessment 의무 연계 | 5章, 第1条–第24条, 款/项 | **HTML diff + snapshot + CAC filing 공지 감시** |
 | **P0 — 人工智能生成合成内容标识办法 (AI 생성·합성 콘텐츠 표시방법)** | [CAC 공식 원문](https://www.cac.gov.cn/2025-03/14/c_1743654684782215.htm) (HTML) | [CAC 部门规章](https://www.cac.gov.cn/wxzw/zcfg/bmgz/A09370303index_1.htm), [CAC 정책·규정](https://www.cac.gov.cn/wxzw/sjzl/zcfg/A09370805index_1.htm) | 2025-09-01 시행 중 | **매우 직접.** TV가 생성·합성하는 text·audio·image·video·virtual scene의 명시 표지와 파일 metadata 잠재표지, 앱스토어 배포 확인·이용자 신고 대응 의무 | 第1条–第14条, 款/项 + 인용 강제표준 | **HTML diff + snapshot + 표준 버전 연결** |
 | **P0 — GB 45438-2025 网络安全技术 人工智能生成合成内容标识方法** | [SAMR 국가표준 공식 레코드](https://std.samr.gov.cn/gb/search/gbDetailed?id=301E0388CB75788DE06397BE0A0AE1B4) (메타데이터·PDF 제공 여부 확인), [OpenSTD 공식 레코드](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F32EA2A561F1886CD8D606513512D547) | [SAMR 국가표준 공고](https://std.samr.gov.cn/noc), [해당 표준 공개 통지](https://openstd.samr.gov.cn/bzgk/std/nd?no=2341) | 2025-02-28 발표·2025-09-01 시행, 강제성 국가표준 | **매우 직접.** 위 표시방법의 text/audio/image/video 파일·metadata 구현 형식과 검증 절차를 정해 TV 생성·편집·export pipeline에 직접 반영 | 범위–규범인용–용어–번호절–표/부록. clause/table/annex ID 저장 | **공식 PDF 확보·해시 + 레코드·공고 HTML diff** |
-| **P0 — 人工智能拟人化互动服务管理暂行办法 (AI 의인화 상호작용 서비스 관리 잠정방법)** | [CAC 공식 원문](https://www.cac.gov.cn/2026-04/10/c_1777558395078289.htm) (HTML) | [CAC 部门规章](https://www.cac.gov.cn/wxzw/zcfg/bmgz/A09370303index_1.htm) | 2026-04-10 공포, **기준일 현재 미시행**, 2026-07-15 시행 예정 | **조건부 직접.** 지속 persona·memory·감정적 관계를 형성하는 TV AI companion이면 인공성 상시 고지, 미성년 mode·휴식, 데이터·종료·안전평가·filing 의무. 관계형이 아닌 단순 Q&A/업무비서는 제외 | 第1条–第32条, 款/项 | **HTML diff + 시행 이벤트 + filing 공지 감시** |
+| **P0 — GB/Z 177.1-2026·GB/Z 177.2-2026 人工智能终端智能化分级 (AI 단말 지능화 등급 참조 프레임워크·일반 요구사항)** | [Part 1 OpenSTD 공식 레코드](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=E4FFCD494C478B90EDF5981A181188B1), [Part 2 OpenSTD 공식 레코드](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=431583FF304763015BD90617D8A02C65) | [MIIT 시리즈 발표·실시 안내](https://www.miit.gov.cn/gyhxxhb/jgsj/dzxxsnew/bzgf/art/2026/art_d5c1209b889b45fa97d4562845b1e184.html), [OpenSTD 공개 통지](https://openstd.samr.gov.cn/bzgk/std/nd?no=2761) | 2026-04-30 발표, 공식 레코드 `现行`; 2026-05-08 관계부처 시리즈 실시 착수 안내. 국가표준화 지도성 기술문서 | **직접.** L1 응답–L4 협업 등급, 공통 판정·시험 틀을 정의하여 향후 중국 TV AI 기능 표시·평가·유통 비교 기준으로 연결. 현 단계에서 별도 TV 인증제 시행 공고와 동일시하지 않음 | Part–clause–table/annex + L1–L4 기준. Part 간 인용관계 저장 | **OpenSTD 원문/PDF diff + MIIT·공개공고 HTML 감시** |
+| **P0 — 20251854-Z-339 人工智能终端智能化分级 第5部分：电视接收机 (AI 단말 지능화 등급 TV 수신기 파트)** | [SAMR 공식 프로젝트 레코드](https://std.samr.gov.cn/gb/search/gbDetailed?id=36E4AC7A37859E69E06397BE0A0A49AD) | [MIIT 전자정보사 표준규범](https://www.miit.gov.cn/gyhxxhb/jgsj/dzxxsnew/bzgf/), [SAMR 국가표준 플랫폼](https://std.samr.gov.cn/) | **현재 `正在批准`**, 등록번호 20251854-Z-339, 등록일 2025-06-06, 예정 시행은 발표 즉시. 아직 GB/Z 표준번호·발표일·시행 상태 없음 | **매우 직접·미시행.** TV 수신기용 등급 기준이며 Samsung Electronics China R&D Center를 포함한 TV 제조사·시험기관이 초안 작성기관으로 참여. 승인·발표 시 제품 AI 기능 등급·시험·마케팅 표현에 직접 영향 가능 | 프로젝트 단계·등록정보·작성기관·작성자. 발표 후 부여되는 표준번호와 원문 조항 연결 | **프로젝트 상태 HTML diff + MIIT 발표·OpenSTD 신규번호 감시** |
+| **P0 — 人工智能拟人化互动服务管理暂行办法 (AI 의인화 상호작용 서비스 관리 잠정방법)** | [CAC 공식 원문](https://www.cac.gov.cn/2026-04/10/c_1777558395078289.htm) (HTML) | [CAC 部门规章](https://www.cac.gov.cn/wxzw/zcfg/bmgz/A09370303index_1.htm) | 2026-04-10 공포·2026-07-15 시행 중 | **조건부 직접.** 지속 persona·memory·감정적 관계를 형성하는 TV AI companion이면 인공성 상시 고지, 미성년 mode·휴식, 데이터·종료·안전평가·filing 의무. 관계형이 아닌 단순 Q&A/업무비서는 제외 | 第1条–第32条, 款/项 | **HTML diff + 시행 이벤트 + filing 공지 감시** |
 | **P0 — 中华人民共和国个人信息保护法 (개인정보보호법, PIPL)** | [NPC 국가법률법규DB 정본](https://flk.npc.gov.cn/detail?fileId=&id=ff8081817b6472a3017b656cc2040044&title=%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E4%B8%AA%E4%BA%BA%E4%BF%A1%E6%81%AF%E4%BF%9D%E6%8A%A4%E6%B3%95&type=) (HTML), [관보 PDF](https://wb.flk.npc.gov.cn/flfg/PDF/f67af9f12e1b4c83a998cf5a876ce0e4.pdf) | [CAC 데이터 법규](https://www.cac.gov.cn/wxzw/sjzl/zcfg/A09370805index_1.htm) | 2021-11-01 시행 중 | **매우 직접.** TV 음성·얼굴·아동·시청/광고 데이터, 자동화 결정의 투명성·비차별·거부권(第24条), 민감정보·국외이전·역외 적용 | 8章, 第1条–第74条, 款/项 | **HTML diff + 관보 PDF 정본 보존** |
 | **P0 — 网络数据安全管理条例 (네트워크 데이터 보안 관리조례)** | [CAC 공식 원문](https://www.cac.gov.cn/2024-09/30/c_1729384452307680.htm) (HTML) | [CAC 데이터 법규](https://www.cac.gov.cn/wxzw/sjzl/zcfg/A09370805index_1.htm) | 2025-01-01 시행 중 | **직접.** 중국 내 연결 TV의 네트워크 데이터 처리, 중요데이터·국외제공·platform 의무와 사고 대응을 구체화 | 9章, 第1条–第64条, 款/项 | **HTML diff + snapshot** |
 | **P0 — 未成年人网络保护条例 (미성년자 네트워크 보호조례)** | [중국정부망 원문](https://www.gov.cn/zhengce/content/202310/content_6911288.htm) (HTML) | [CAC 정책·규정](https://www.cac.gov.cn/wxzw/sjzl/zcfg/A09370805index_1.htm) | 2024-01-01 시행 중 | **직접.** 미성년 TV 계정·콘텐츠·추천·광고, 중독방지·개인정보·유해콘텐츠와 플랫폼 책임에 영향 | 7章, 第1条–第60条, 款/项 | **HTML diff + snapshot** |

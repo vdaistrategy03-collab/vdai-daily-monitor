@@ -69,6 +69,7 @@ $promptFile = if ($env:CODEX_PROMPT_FILE) { $env:CODEX_PROMPT_FILE } else { Join
 $validateReportScript = Join-Path $repoRoot "scripts\validate_report_format.ps1"
 $validateReportImagesScript = Join-Path $repoRoot "scripts\validate_report_images.ps1"
 $validateReportContextScript = Join-Path $repoRoot "scripts\validate_report_context.ps1"
+$validateCoverageHandoffScript = Join-Path $repoRoot "scripts\validate_coverage_handoff.ps1"
 $model = if ($env:CODEX_MODEL) { $env:CODEX_MODEL } else { "gpt-5.6-terra" }
 $codexSandbox = if ($env:CODEX_SANDBOX_MODE) { $env:CODEX_SANDBOX_MODE } else { "danger-full-access" }
 $remoteUrl = if ($env:REMOTE_URL) { $env:REMOTE_URL } else { "https://github.com/vdaistrategy03-collab/vdai-daily-monitor.git" }
@@ -301,6 +302,16 @@ function Invoke-CodexExecWithRetry {
 }
 
 function Get-PublishedReportBasis {
+    try {
+        Import-GitHubAuth
+        Invoke-WithRetry "published report basis fetch" {
+            Invoke-Git -C $repoRoot fetch origin "+refs/heads/${branch}:refs/remotes/origin/${branch}" -q
+        }
+    } catch {
+        Write-RunLog ("Unable to refresh origin/{0} for the published report basis: {1}" -f $branch, $_.Exception.Message)
+        return "unavailable - unable to refresh origin/$branch; do not use unpublished local artifacts as the search baseline"
+    }
+
     $publishedLatest = & $gitBin -C $repoRoot show "origin/${branch}:new_features/latest.md" 2>$null | Out-String
     if ($LASTEXITCODE -ne 0 -or -not $publishedLatest.Trim()) {
         return "unavailable - do not use unpublished local artifacts as the search baseline"
@@ -317,6 +328,31 @@ function Get-PublishedReportBasis {
     }
 
     return $matches[$matches.Count - 1].Groups["value"].Value
+}
+
+function Test-CoverageHandoff {
+    if (-not (Test-Path $validateCoverageHandoffScript)) {
+        throw "Coverage handoff validator not found: $validateCoverageHandoffScript"
+    }
+
+    $attemptMessages = @(Get-ChildItem -LiteralPath $logDir -Filter "last_message_${timestamp}_attempt_*.txt" -File -ErrorAction SilentlyContinue |
+        Sort-Object LastWriteTime -Descending)
+    if ($attemptMessages.Count -eq 0) {
+        throw "Codex final message not found for coverage validation: last_message_${timestamp}_attempt_*.txt"
+    }
+
+    $expectedRunEndKst = $runStartedAtKst.ToString("yyyy-MM-dd HH:mm 'KST'", [System.Globalization.CultureInfo]::InvariantCulture)
+    Write-RunLog ("[{0}] Validating coverage handoff." -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"))
+    $coverageOutput = & powershell -NoProfile -ExecutionPolicy Bypass -File $validateCoverageHandoffScript `
+        -Path $attemptMessages[0].FullName `
+        -ExpectedRunEndKst $expectedRunEndKst 2>&1 | Out-String
+    if ($LASTEXITCODE -ne 0) {
+        Write-RunLog $coverageOutput.TrimEnd()
+        throw "Coverage handoff validation failed"
+    }
+    if ($coverageOutput.Trim().Length -gt 0) {
+        Write-RunLog $coverageOutput.TrimEnd()
+    }
 }
 
 function Test-ReportFormat {
@@ -596,6 +632,7 @@ try {
         exit $cmdStatus
     }
 
+    Test-CoverageHandoff
     $dailyReport = Test-ReportFormat
     Publish-Reports -DailyReport $dailyReport
     Sync-LocalCheckoutIfOnlyReportsChanged

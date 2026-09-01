@@ -10,10 +10,10 @@ Additionally, monitor newly emerging AI regulation, policy, and enforcement acro
 
 - Write all report content in Korean.
 - Reuse prior reports to avoid duplicate coverage.
-- Focus first on official sources and major media, then expand to regional coverage if time allows. Major tech media to prioritize: The Verge, TechCrunch, Ars Technica, CNET, Engadget, Android Central, 9to5Google, MacRumors, Reuters, Bloomberg. For TV-specific trade coverage also check FlatpanelsHD, Display Daily, TV Answer Man.
+- Focus first on official sources and major media, then complete the regional and local-language coverage due for that run. Regional coverage is scheduled work, not optional work to attempt only if time allows. Major tech media to prioritize: The Verge, TechCrunch, Ars Technica, CNET, Engadget, Android Central, 9to5Google, MacRumors, Reuters, Bloomberg. For TV-specific trade coverage also check FlatpanelsHD, Display Daily, TV Answer Man.
 - Exclude rumors and leaks unless they are clearly labeled as unconfirmed and come from highly credible outlets.
 - Do not add one combined source list. Put `출처` links under each item.
-- Every confirmed direct TV/monitor/projector item and every included indirect Google/Amazon item must include:
+- Every confirmed direct TV/monitor/projector item and every included indirect service item must include:
   - `관련성: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)`
   - `중요도: 상|중|하 (등급 근거를 문장형보다 짧은 축약형으로 작성)`
   - `인사이트` with these bullets for non-Samsung items:
@@ -33,14 +33,42 @@ RSS operating rules:
 - Treat RSS as a signal source, not a complete source list. If an RSS feed is unavailable, stale, too broad, or noisy, use `site:` searches and official newsroom/developer/regulator pages instead.
 - Verify RSS discoveries against the original source page, official announcement, or a major credible media source before including them in the report.
 - Exclude duplicate rewrites, affiliate-driven shopping posts, routine promotions, commodity spec refreshes, and rumors unless they satisfy the report's existing inclusion rules.
-- Use the existing dynamic search window from the latest report execution time to the current 기준 시각. For Monday AI regulation Tier 2 sweeps, use the required 7-day window even if RSS has older or newer items.
+- Use the existing dynamic search window from the latest published report execution time to the current 기준 시각 as the authoritative report window. In addition, use a rolling 72-hour discovery overlap for RSS, official pages, web search, and local-language search to catch delayed indexing, feed/parser failures, and late publication. Deduplicate overlap results against prior reports by canonical URL and event substance; include an older item only when it was genuinely missed or has a material new development.
+- Parse every RSS/Atom entry that falls within the authoritative window or 72-hour discovery overlap before applying item-count limits. Do not use `First N` or an English-title keyword filter before date filtering. Evaluate normalized title, summary/description, category, publication/update time, and canonical link.
+- Record success, no-update, fallback, stale, timeout, parse-error, not-run, and not-due status for each source or stable coverage bucket in the execution log. A failed source is not "checked". Complete an official-page or `site:` fallback before declaring that source or coverage bucket has no update.
+- Carry failed mandatory sources and any missed scheduled weekly sweep into the next successful run. Catch-up must begin at the bucket's preserved `last_completed_end_kst` and continue to the current 기준 시각; a failed attempt never advances that timestamp. Never replace a missed or delayed sweep with a new fixed 7-day window that leaves an earlier gap.
 - Mention RSS access failures in `불확실성 및 검증 공백` only when they materially limit coverage.
+
+### Discovery recall contract
+
+- Discovery and reporting are separate gates. During discovery, do not discard a candidate because the company is small, absent from the priority list, active in only one market, or expected to have low current relevance. Verify the original source first, then grade and route it.
+- Read `docs/discovery_search_matrix.md` on every run and complete the query families and language groups due for that day. The matrix is a minimum, not an allowlist.
+- Run both brand-specific checks and brand-agnostic topic searches. A run is incomplete if it checks only the named priority companies.
+- Check every priority TV maker and platform with its own brand query and official-domain or official-page fallback; a single multi-brand `OR` query never satisfies a brand-specific check. Split hardware terms such as `TV`, `OLED`, `Mini LED`, and `projector` from platform terms such as `OS`, `home screen`, `developer`, `advertising`, and `AI` so search-result limits cannot hide a major launch.
+- Build the emerging-company watch set from non-priority companies and platforms appearing in the previous 90 days of published reports. Do not seed it from unpublished local or failed-run artifacts. Recheck first-seen names daily for 30 days and in the Monday 7-day sweep through day 90, as specified in the discovery matrix.
+- Promote a watched entity to the handoff's durable `permanent` tier when it meets the discovery matrix criteria. Recheck permanent entities every run and do not expire them merely because they fall outside the rolling 90-day report window.
+- Preserve every credible, mildly relevant new signal in `기타 항목` when either grade is `하`. The only hard exclusions at discovery time are duplicate rewrites with no new fact, pure promotion with no product/service/market change, unsupported rumors, and enterprise/API/coding/benchmark news with no plausible consumer, media, home, or TV path.
+- Before writing the report, complete and log these coverage buckets: priority RSS/media, priority official brands/platforms, brand-agnostic emerging entrants, indirect consumer AI/services, due local-language groups, Tier 1 AI regulation, due Tier 2/catch-up sweeps, and failed-source fallbacks.
+- In `확인했으나 업데이트가 없었던 곳`, claim only sources and buckets actually completed in the current run. Put incomplete buckets and material source failures in `불확실성 및 검증 공백`; do not describe them as checked.
+
+### Execution state handoff
+
+- Before discovery, read the most recent valid `COVERAGE_HANDOFF_V1` block from `logs/cron/last_message_*.txt`, including attempt-suffixed Windows files, and its matching `run_*.log`. Trust it only when that run log contains `Finished with exit code 0`, `Coverage handoff validation passed`, successful report-format validation, and either `Publish completed.` or `No report changes to publish.`
+- Use the handoff to carry forward each bucket's attempt window and last successful completion, failed source URLs and retry starts, 90-day `watch` and durable `permanent` company tiers, the future event calendar, and active event windows. It supplements but never replaces or narrows the wrapper-provided authoritative report window.
+- If no valid handoff exists, rebuild the emerging-company set from the previous 90 days of published reports, retry failures named in the latest published report, and catch up scheduled sweeps from the earlier of the authoritative window start and 14 days before the current 기준 시각.
+- At the end of every automated run, include the exact line-oriented handoff format and every stable bucket ID defined in `docs/discovery_search_matrix.md` in the final response so the wrapper log can preserve a complete state snapshot for the next run. Preserve `last_completed_end_kst` for failed and `NOT_DUE` buckets, and retain future events and `permanent` entities until explicitly superseded.
 
 Priority official/product/platform sources:
 
 - Samsung Newsroom: https://news.samsung.com/global/feed
 - LG Newsroom: https://www.lg.com/global/newsroom/news/
 - Sony Press: https://www.sony.com/en/SonyInfo/News/Press/
+- TCL Global News: https://www.tcl.com/global/en/news
+- Hisense International News: https://www.hisense.com/global/newsroom.html
+- Panasonic Newsroom Global: https://news.panasonic.com/global/
+- TP Vision News Releases: https://www.tpvision.com/news-releases/
+- Sharp Press Releases: https://global.sharp/corporate/news/
+- Xiaomi Newsroom: https://www.mi.com/global/discover/newsroom/
 - Roku Blog: https://blog.roku.com/feed
 - Roku Developer Blog: https://blog.roku.com/developer/feed
 - Amazon Developer / Fire TV / Appstore: https://developer.amazon.com/apps-and-games/blogs
@@ -49,6 +77,10 @@ Priority official/product/platform sources:
 - Apple Newsroom: https://www.apple.com/newsroom/rss-feed.rss
 - Tizen Developers: https://developer.samsung.com/tizen
 - webOS TV Developer: https://webostv.developer.lge.com/
+- Titan OS: https://www.titanos.tv/
+- Whale TV Press Releases: https://www.whaletv.com/news-category/press-releases
+- Xumo TV: https://www.xumo.com/products/xumo-tv
+- TiVo OS Developer: https://developers.tivo.com/smart-tv/intro
 
 Priority media and trade sources:
 
@@ -93,6 +125,12 @@ Priority AI regulation and policy sources:
 - KISA Notices: https://kisa.or.kr/rss/401
 - KISA Press Releases: https://kisa.or.kr/rss/402
 - China CAC: https://www.cac.gov.cn/
+- China MIIT Electronic Information / Standards: https://www.miit.gov.cn/gyhxxhb/jgsj/dzxxsnew/bzgf/
+- China SAMR: https://www.samr.gov.cn/
+- China National Standards Public Service Platform: https://std.samr.gov.cn/
+- China Open National Standards: https://openstd.samr.gov.cn/
+- China CESI: https://www.cesi.cn/
+- China CAICT: https://www.caict.ac.cn/
 
 ## Scope
 
@@ -112,19 +150,27 @@ Prioritize:
 - Roku
 - Apple TV
 
-Also include indirect but relevant Google/Amazon launches when they could extend to TV, living-room commerce/media, or smart-home control. Smart-home hub devices such as Google Home Speaker and Amazon Echo are qualifying indirect items when they introduce new AI capabilities (e.g. Gemini integration, on-device reasoning, multi-step commands) that extend to TV voice control or smart-home orchestration competing with Samsung SmartThings and Tizen-based integrations.
+The priority list is a depth-of-coverage list, not an allowlist. Every run must also perform brand-agnostic discovery for new TV/display makers, regional brands, operator/private-label TVs, ODM/OEM partnerships, independent TV operating systems, streaming devices, projectors, and adjacent screen platforms. Discoveries from companies outside the priority list are graded by the same strategic criteria and must not be excluded merely because the company is small or unfamiliar.
 
-Broaden Google/Amazon AI tracking beyond TV-branded announcements. Core consumer-facing Gemini or Alexa AI capabilities qualify as indirect-service candidates when there is a plausible path to TV, living-room, smart-home, media, personalization, or commerce use cases, even if the article does not explicitly mention Google TV, Android TV, Fire TV, or Echo Show. Examples include persistent user memory/preferences, multimodal voice/vision understanding, image/video generation or editing, content summarization/translation, media search and recommendation, multi-step AI agent actions, on-device or edge AI, smart-home orchestration, and shopping/advertising personalization. If the TV/living-room path is explicit or strategically strong, place the item under `간접 서비스`; if the path is plausible but weak, place it under `기타 항목` with `관련성: 하` or `중요도: 하`; if it is enterprise/API/model-benchmark/coding/workspace-only news with no consumer assistant or living-room path, exclude it.
+Track indirect but relevant consumer AI and service launches regardless of provider. Seed providers include Google/Gemini, Amazon/Alexa, Apple/Siri, Microsoft/Copilot/Xbox, OpenAI, Meta AI, Anthropic, Perplexity, xAI, Baidu, Alibaba/Qwen, ByteDance/Doubao, Tencent, Naver, Kakao, and newly discovered consumer assistants. This is a discovery seed list, not an allowlist.
 
-For all prioritized TV makers and TV platforms, include major platform, UX, ecosystem, and developer-facing updates when they materially affect TV competitiveness, even if they are not consumer hardware launches. Treat these as `신규 발표 확인 사항` when they are directly about a TV platform, TV OS, TV device family, TV app ecosystem, or TV usage model. This includes updates from official developer blogs, partner blogs, SDK documentation, app distribution guidance, major trade media, and product support channels when the impact is strategically meaningful.
+Core consumer-facing capabilities qualify as indirect-service candidates when there is a plausible path to TV, living-room, smart-home, media, personalization, accessibility, or commerce, even if the announcement does not explicitly mention a TV product. Examples include persistent memory/preferences, multimodal voice/vision or screen understanding, real-time translation/dubbing, image/video generation or editing, content summarization, media search and recommendation, multi-step agent actions, on-device or edge AI, smart-home orchestration, identity/family controls, and shopping/advertising personalization. Smart speakers, displays, phones, wearables, vehicles, and browsers qualify when they establish an interaction model or ecosystem capability that could move to the household screen.
+
+If the TV/living-room path is explicit or strategically strong, place the item under `간접 서비스`; if the path is plausible but weak or early, place it under `기타 항목` with `관련성: 하` or `중요도: 하`. Exclude enterprise/API/model-benchmark/coding/workspace-only news only when it has no consumer product, media, device-partner, smart-home, or living-room path.
+
+Also monitor strategically relevant ecosystem providers when their changes can reshape TV competition: independent TV OS licensors (including Titan OS, Whale TV, Xumo, TiVo OS, and newly discovered platforms), major streaming/media services, FAST and CTV advertising/commerce platforms, cloud-gaming services, TV silicon and display-panel suppliers, and cross-industry standards such as Matter, C2PA, HDMI, HbbTV, ATSC, DVB, AOMedia, HDR, and immersive audio. Routine upstream corporate news remains excluded unless it changes a TV capability, cost/availability constraint, developer requirement, or competitive route to market.
+
+For all prioritized or newly discovered TV makers and TV platforms, include major platform, UX, ecosystem, and developer-facing updates when they materially affect TV competitiveness, even if they are not consumer hardware launches. Treat these as `신규 발표 확인 사항` when they are directly about a TV platform, TV OS, TV device family, TV app ecosystem, or TV usage model. This includes updates from official developer blogs, partner blogs, SDK documentation, app distribution guidance, major trade media, and product support channels when the impact is strategically meaningful.
 
 Examples of qualifying platform/UX updates include TV OS or home-screen changes, app discovery surfaces, search/recommendation systems, FAST/content rows, advertising or commerce surfaces, account/profile changes, remote-control input, pointer or motion input, D-pad/focus model changes, voice/AI assistant behavior, gaming/cloud gaming hubs, casting/second-screen flows, accessibility features, security/privacy requirements, app certification requirements, SDK/API changes, app store or distribution policy changes, entitlement/resume/watch-next/recommendation APIs, and smart-home control surfaces. Do not limit this rule to Google TV; apply the same judgment to Tizen, webOS, Roku OS, Fire TV, tvOS/Apple TV, Android TV/Google TV, VIDAA, TiVo/Sharp/Philips/TP Vision platforms, and other strategically relevant TV software layers.
 
-TV is still the highest-priority category. If meaningful monitor or projector software/hardware announcements appear from the prioritized companies or other strategically relevant display players, include them in `신규 발표 확인 사항` rather than creating a separate category. Do not dilute the report with routine monitor/projector retail promotions, minor availability notices, or commodity spec refreshes unless they have clear competitive relevance for Samsung TVs, premium displays, gaming screens, home cinema, AI UX, content services, or smart-home/living-room strategy.
+TV is still the highest-priority category. If meaningful monitor or projector software/hardware announcements appear from the prioritized companies or other strategically relevant display players, include them in `신규 발표 확인 사항` rather than creating a separate category. Do not dilute the report with routine monitor/projector retail promotions, minor availability notices, or commodity spec refreshes unless they have clear competitive relevance for Samsung TVs, premium displays, gaming screens, home cinema, AI UX, content services, or smart-home/living-room strategy. A first product, first market entry, first major retail/OEM/OS partnership, or first distinctive AI/UX model from an emerging company is not a routine commodity refresh and must be evaluated as a new entrant signal.
 
 ## Relevance and Importance Calibration
 
 Use strict grading. Do not inflate `관련성` or `중요도` merely because a priority brand is mentioned.
+
+Apply grading only after discovery and source verification. Being absent from the priority list, having low current market share, or launching in a single region is not by itself a reason to assign `하`. For an emerging company, explicitly consider novelty, first-market entry, OS/OEM/retail partnership, differentiated AI/UX, business model, and potential to establish a pattern larger competitors can copy.
 
 - `관련성: 상`: Directly affects Samsung TV competitiveness, TV OS/platform UX, app ecosystem, smart-home control, premium TV hardware, content discovery, advertising/commerce surfaces, or TV AI services.
 - `관련성: 중`: Connected to TV/display strategy, sales channels, adjacent monitor/projector competition, or living-room services, but not a direct product/platform/AI service change.
@@ -135,6 +181,8 @@ Use strict grading. Do not inflate `관련성` or `중요도` merely because a p
 - Best Buy-like retailer-led announcements about store displays, comparison demos, sales campaigns, or "exclusive national retailer" positioning should generally be `중요도: 하` unless they disclose genuinely new product specs, pricing, launch timing, or materially exclusive market access.
 
 Items with either `관련성: 하` or `중요도: 하` still belong in the report when they are credible and mildly relevant, but they must be placed only in `기타 항목` and summarized briefly.
+
+There is no fixed numerical cap on `기타 항목`. Preserve credible emerging-company, local-market, indirect-AI, standards/certification, and ecosystem signals there when their TV path is plausible but not yet strong enough for a main section. Concision comes from the one-line format, not from silently dropping candidates.
 
 ## Strategic Intent for Top Items
 
@@ -160,23 +208,34 @@ In addition to product/platform announcements, track newly emerging AI regulatio
 
 ### Samsung TV AI service categories (relevance checklist)
 
-A regulation item qualifies only if it could plausibly affect at least one of these Samsung TV AI service categories. Tag each included item with the affected category names in `영향 범주`.
+A regulation item qualifies only if it could plausibly affect at least one functional category or one cross-cutting legal dimension below as applied to a Samsung TV device, AI feature, media/platform service, account, advertising surface, or connected-home function. Tag each included item with every affected functional category and legal dimension in `영향 범주`.
 
 - 콘텐츠/UI: 콘텐츠 추천, 생성형 UI, 개인화 UI, 콘텐츠 생성, 요약, 번역
 - 미디어 처리: 화질/음질 개선, 장면 인식, 콘텐츠 관련 질의응답
 - 에이전트/OS: AI 에이전트 작업 수행, 사용자 컨텍스트 이해, 음성 및 멀티모달 인터랙션, on-device AI, AI OS
 - 비즈니스: 광고, 커머스
+- 데이터/프라이버시: 시청 이력, ACR, 음성·영상·생체·계정 데이터, 프로파일링, 아동 데이터, 국외 이전
+- 안전·보안·책임: 제품·사이버 보안, AI 안전성, 취약점·사고 보고, 제품책임, 적합성평가
+- 접근성·아동: 자막·음성 안내·메뉴 접근성, 연령 확인, 아동보호, 유해 콘텐츠·상호작용
+- 플랫폼·상호운용: gatekeeper, 앱·OS 배포, 기본값·선택권, 데이터 이동성, API·스마트홈 상호운용
 
-If a regulation has no plausible link to any of the categories above, exclude it. Do not include general AI policy news that does not touch consumer devices, media platforms, recommendation/advertising, voice/biometric, or generative content.
+If a regulation has no plausible Samsung TV device, service, media, account, advertising, or connected-home link, exclude it. Do not include a broad privacy, cybersecurity, accessibility, child-safety, product-safety, or platform rule solely because it mentions AI or consumer technology.
 
 ### Search themes (map service terms to legal terms)
 
-Regulators do not use product words like "생성형 UI" or "화질 개선". Search the legal/regulatory vocabulary below and let the relevance checklist decide inclusion. Run these as separate theme queries and merge results rather than one giant query.
+Regulators do not use product words like "생성형 UI" or "화질 개선". Search the legal/regulatory vocabulary below and let the relevance checklist decide inclusion. Run these as separate theme queries and merge results rather than one giant query. Read `docs/ai_regulatory_source_catalog.md` on every run: monitor P0 news/status URLs daily and review the full official text, version metadata, and change history every Monday; monitor P1 news, status, and index pages daily and perform the same full-source review on Monday; monitor P2 status-change signals daily and perform the full status pass on the first successful run of each calendar month. Perform a content diff only when a trusted earlier snapshot or fingerprint actually exists; otherwise record a baseline/metadata review and do not call it a diff. Carry missed checks forward from `last_completed_end_kst`. For China, run separate Chinese-language queries using the Chinese terms below; an English query or translated search result is not a substitute.
 
-- T1 생성형·투명성 (콘텐츠 생성/요약/번역/생성형 UI/생성형 업스케일): `generative AI`, `transparency`, `watermark`, `content labeling`, `synthetic content`, `copyright`, `deepfake`
-- T2 데이터·알고리즘 (추천/개인화/광고/커머스/장면 인식/컨텍스트): `recommendation algorithm`, `profiling`, `targeted advertising`, `ACR`, `automatic content recognition`, `privacy`, `children's data`
-- T3 음성·생체·플랫폼 (음성/멀티모달/AI 에이전트/AI OS/질의응답): `voice assistant`, `biometric data`, `AI agent`, `gatekeeper`, `interoperability`, `DMA`
-- T4 온디바이스·안전성 (on-device AI): `on-device AI`, `edge AI`, `AI safety`, `general-purpose AI model`
+- T1 생성형·투명성 (콘텐츠 생성/요약/번역/생성형 UI/생성형 업스케일): `generative AI`, `transparency`, `watermark`, `content labeling`, `synthetic content`, `copyright`, `deepfake`; China: `生成式人工智能`, `生成内容`, `合成内容`, `内容标识`, `水印`, `深度合成`, `著作权`
+- T2 데이터·알고리즘 (추천/개인화/광고/커머스/장면 인식/컨텍스트): `recommendation algorithm`, `profiling`, `targeted advertising`, `ACR`, `automatic content recognition`, `privacy`, `data protection`, `cross-border transfer`, `children's data`, `age assurance`, `child safety`; China: `推荐算法`, `算法推荐`, `用户画像`, `定向广告`, `自动内容识别`, `个人信息保护`, `数据出境`, `儿童个人信息`, `年龄核验`, `未成年人保护`
+- T3 음성·생체·플랫폼 (음성/멀티모달/AI 에이전트/AI OS/질의응답): `voice assistant`, `biometric data`, `AI agent`, `gatekeeper`, `interoperability`, `DMA`, `accessibility`, `closed caption`, `audio description`, `accessible interface`; China: `语音助手`, `生物识别信息`, `人工智能体`, `智能体`, `互操作`, `平台治理`, `无障碍`, `字幕`, `音频描述`
+- T4 온디바이스·안전성 (on-device AI): `on-device AI`, `edge AI`, `AI safety`, `general-purpose AI model`, `cybersecurity`, `product safety`, `product liability`, `connected product`, `vulnerability reporting`; China: `端侧人工智能`, `边缘人工智能`, `人工智能安全`, `通用人工智能模型`, `网络安全`, `产品安全`, `产品责任`, `联网产品`, `漏洞报告`
+- T5 AI 단말·TV 표준/인증: `AI terminal`, `smart TV standard`, `intelligence grading`, `certification`, `conformity assessment`, `testing`, `effective date`; China: combine (`电视`, `电视接收机`, `智能电视`, `AI电视`, `人工智能电视`) with (`人工智能终端`, `智能化分级`, `智能化等级`, `国家标准`, `行业标准`, `标准发布`, `实施`, `认证`, `检测`, `符合性评价`). Check the standards, certification, testing, assurance, and product-safety authorities for every Tier 1 jurisdiction even when no RSS or major-media result exists; the jurisdiction-specific minimum source table in `docs/discovery_search_matrix.md` is mandatory.
+
+Chinese-language source handling:
+
+- Search Chinese official pages and Chinese-language media in the original language on every run. Do not rely only on English-language coverage, machine-translated titles, or broad international RSS feeds.
+- Verify Chinese standards by checking status fields such as `现行`, `正在批准`, `征求意见`, `发布日期`, and `实施日期`; distinguish a framework launch, a draft/approval-stage product part, and an enforceable or active certification scheme.
+- Route TV/device-specific technical standards, grading specifications, certification programs, and conformity-assessment changes to `신규 발표 확인 사항` with `분류: 규제/인증`. Route broader AI laws, service rules, policy guidance, and enforcement affecting Samsung TV AI services to `AI 규제 동향`.
 
 ### Jurisdiction tiers (control noise across all selling markets)
 
@@ -185,7 +244,8 @@ Samsung TVs sell worldwide, but daily full-scans of every country are noisy. Use
 - Tier 1 (check every run): EU (AI Act, DMA), United States (federal + key states such as California, Colorado, Texas), South Korea (AI 기본법), United Kingdom, China.
 - Tier 2 (mandatory weekly sweep every Monday): India, Brazil, Japan, Canada, Australia, Middle East, Southeast Asia, and other selling markets — search the preceding 7 days ending at the report 기준 시각, regardless of the normal dynamic report search window, and surface only clear new legislation, enforcement, or guidance signals.
 - Always include relevant global/industry standards (e.g. watermarking, content provenance) regardless of tier.
-- On Monday reports, explicitly note the Tier 2 weekly sweep result with the label `AI 규제 Tier 2` and the 7-day search window. If no Tier 2 item qualifies for `AI 규제 동향`, record the sweep under `확인했으나 업데이트가 없었던 곳`.
+- On Monday reports, explicitly note the Tier 2 weekly sweep result with the label `AI 규제 Tier 2` and the normal 7-day search window. If no Tier 2 item qualifies for `AI 규제 동향`, record the sweep under `확인했으나 업데이트가 없었던 곳`.
+- If the last successful run missed a Monday or another scheduled sweep day, the next successful run must perform and label catch-up from that bucket's `last_completed_end_kst` through the current 기준 시각. If completion state is unavailable, start at the earlier of the authoritative search-window start and 14 days before the current 기준 시각. A delayed run must not leave the first part of the missed period unsearched.
 
 Prefer official sources (regulator/government sites, official journals, agency press) and major legal/policy media. Exclude speculation; mark credible-but-unconfirmed items as 미확인.
 
@@ -214,11 +274,10 @@ All reports must use this exact section order and field naming. Keep section nam
 Summary rule:
 
 - Write `## 요약` as a short bullet list of 2-3 concise Korean summaries. Prefer shortened forms such as `라인업 공개`, `경쟁 구도 확인`, and `영향 가능` over full sentence endings such as `공개했다` or `보여준다`.
-- Include only discovered qualifying items and their strategic meaning.
-- Do not include `기타 항목` items in `## 요약` unless there are no qualifying items in `신규 발표 확인 사항`, `간접 서비스`, or `AI 규제 동향`; in that case, write one concise bullet noting no major qualifying update and that low-priority signals are listed separately.
+- Prioritize qualifying items and their strategic meaning. As one of the maximum three bullets, `관찰 신호:` may summarize at most one credible `기타 항목` item when it is an emerging company's first product or market entry, a first major OEM/OS/distribution partnership, or an early TV/AI standard or certification status change.
+- If there are no qualifying items, write one concise bullet noting no major qualifying update and, when the exception above applies, one separate `관찰 신호:` bullet. Do not promote routine low-priority items into the summary.
 - Do not include Samsung recommendations, action proposals, or phrases such as `삼성은 ... 필요가 있다` in `## 요약`; keep recommendations only in each item's `인사이트` / `제안`.
 - Do not describe where there were no updates, which sources were checked, or the search process in `## 요약`; reserve that detail for `## 확인했으나 업데이트가 없었던 곳` and `## 불확실성 및 검증 공백`.
-- If there are no qualifying items, write one concise bullet saying that no qualifying announcements were found in the search window.
 
 Content style rule:
 
@@ -311,7 +370,7 @@ Image rule:
    - 관할: EU | 미국(연방) | 미국(주) | 한국 | 중국 | 영국 | 기타
    - 진행 단계: 입법예고 | 통과 | 시행 | 가이드라인 | 집행/제재
    - 시행/적용 시점: YYYY-MM-DD | 미정
-   - 영향 범주: [콘텐츠 추천 / 생성형 UI / 광고 / 음성·멀티모달 등 영향받는 삼성 TV AI 서비스 범주를 태그]
+   - 영향 범주: [콘텐츠/UI / 미디어 처리 / 에이전트/OS / 비즈니스 / 데이터/프라이버시 / 안전·보안·책임 / 접근성·아동 / 플랫폼·상호운용 중 적용 태그]
    - 내용
      - [규제 핵심: 명사형/요약형으로 작성]
      - [적용 대상·범위]
@@ -348,16 +407,18 @@ Image rule:
 Format rules:
 
 - If there are no qualifying items, write only `해당 없음` under `## 신규 발표 확인 사항`.
-- If there are no qualifying indirect Google/Amazon items, write only `해당 없음` under `## 간접 서비스`.
+- If there are no qualifying indirect consumer AI, media, smart-home, commerce, or adjacent service items, write only `해당 없음` under `## 간접 서비스`.
 - If there are no qualifying AI regulation items, write only `해당 없음` under `## AI 규제 동향`.
 - If there are no low-priority items, write only `해당 없음` under `## 기타 항목`.
 - Place every credible item with either `관련성: 하` or `중요도: 하` under `## 기타 항목`, not under the three main item sections.
 - Keep `## 기타 항목` intentionally brief: each item must contain only the numbered title, a single `요약` line, and one `출처` line with links. Do not add representative images, status, date, classification, long analysis, or `인사이트` bullets there.
+- Do not omit a credible emerging-company, regional-market, indirect-AI, standards/certification, or ecosystem signal merely to keep `기타 항목` short. Use the required one-line format to control length.
 - Do not rename, reorder, or omit the seven required top-level sections.
 - Do not add a combined source list anywhere in the report.
 - Put item sources under that item only, using the `출처` field.
 - Use numbered items only for actual included announcements.
 - Use `- 해당 없음` for empty non-announcement sections.
+- Under `확인했으나 업데이트가 없었던 곳`, list only sources and coverage buckets successfully checked in that execution. Never use a grouped brand/jurisdiction claim when one or more members were not actually checked; move material gaps to `불확실성 및 검증 공백`.
 - For non-Samsung items, keep `인사이트` bullets exactly as `의미:`, `참고할 점:`, and `제안:`. Put top-item scenario analysis only in the separate `전략적 의도` field, not as an extra `인사이트` bullet.
 - For direct Samsung Electronics / Samsung TV items, keep only `인사이트` / `의미:` and omit `참고할 점:` and `제안:`.
 
@@ -374,17 +435,18 @@ Classification guide:
 
 ## Suggested Run Flow
 
-1. Read the newest files under `new_features/` to avoid duplicate coverage.
-2. Identify the **latest report execution time** from the newest report and set search window from that timestamp to now.
-   - Do **not** use a fixed 24-hour window.
-   - This is to backfill possible misses when a prior run had partial search failures.
-3. Investigate direct TV announcements first, including platform, developer, input/navigation, discovery/recommendation, AI assistant, app ecosystem, and TV OS updates from all prioritized TV makers and platforms when they affect the TV experience.
-4. Investigate meaningful monitor/projector announcements, relevant indirect Google/Amazon items, and core consumer-facing Gemini/Alexa AI capability launches that could plausibly extend to TV, living-room media, smart-home control, personalization, or commerce within that dynamic window.
-5. Investigate AI regulation per the `AI Regulation Scope` section: run the four search themes (T1–T4) against Tier 1 jurisdictions every run. Every Monday, also run the Tier 2 sweep across the preceding 7 days ending at the report 기준 시각, even if the normal report search window is shorter or longer. Keep only items that pass the Samsung TV AI service relevance checklist and tag each with `영향 범주`.
-6. Grade relevance and importance strictly. If either score is `하`, route the item to `기타 항목` with only title, one-line summary, and source links.
-7. For any non-Samsung, non-regulation product/platform/service item graded both `관련성: 상` and `중요도: 상`, perform the `Strategic Intent for Top Items` research pass, add `전략적 의도`, and deepen the `인사이트` bullets accordingly. For direct Samsung Electronics / Samsung TV items, omit `전략적 의도` and write only `인사이트` / `의미:`. For `AI 규제 동향` items, always omit `전략적 의도` and explain obligation, risk, and response meaning through `인사이트`.
-8. Write the report in Korean with explicit source attribution per item.
-9. If there are no qualifying items in a section, write `해당 없음` only under that section.
-10. Run `scripts/validate_report_format.ps1` and `scripts/validate_report_images.ps1 -TreatWarningsAsErrors` against the generated daily report and `new_features/latest.md`; fix every format error, broken image URL, low-resolution URL, and suspicious logo/social-card warning before stopping. If a warned image is actually appropriate after visual inspection, prefer replacing it with a clearer source image; keep it only when no better source-page image exists.
-11. Stop after updating and validating the local markdown files.
-12. Do not commit or push from this repository. Git operations are handled by a separate local process outside this run.
+1. Read `docs/discovery_search_matrix.md`, `docs/ai_regulatory_source_catalog.md`, the newest published reports under `new_features/`, and the latest valid execution-state handoff before discovery. Use prior reports to deduplicate events, not to narrow the allowed company or topic scope.
+2. Use the wrapper-provided **latest published report basis** as the authoritative search-window start and the wrapper KST time as the end. Do not use a fixed 24-hour window or an unpublished local report as the baseline.
+3. Add the rolling 72-hour discovery overlap. An older candidate found in the overlap may be included when prior reports missed it or when it contains a material new rollout, market, partner, requirement, price, or availability fact.
+4. Process all priority RSS/Atom sources and required official pages. Filter by time before applying item limits, inspect title plus description/category, and perform fallbacks for failures.
+5. Investigate direct TV, monitor, projector, streaming-device, platform, developer, content, advertising/commerce, gaming, standards, silicon, and display announcements from priority and previously discovered companies.
+6. Complete the brand-agnostic emerging-entrant and independent-platform query families in `docs/discovery_search_matrix.md`. Verify an unfamiliar company with an official product/partner source or two independent credible major, trade, or regional outlets. Use `주요 매체 확인` when only the two-source route succeeds and keep searching for the official source.
+7. Complete the provider-neutral indirect consumer AI/service capability queries. Cover voice/vision, memory, agents, media intelligence, generation/editing, translation/dubbing, smart home, on-device AI, accessibility, advertising, shopping, and payments where a TV/living-room path is plausible.
+8. Complete the local-language groups and event-window searches due for the day, including every catch-up window since the last successful completion. Local-language product/platform/service discovery is separate from local-language regulation discovery.
+9. Investigate AI regulation per `AI Regulation Scope`: run T1–T5 against Tier 1 jurisdictions every run, use the regulatory source catalog's daily/weekly/monthly layers, and perform the Monday Tier 2 sweep or any gap-free catch-up. Keep only items that pass the expanded Samsung TV AI relevance checklist and tag each functional and legal `영향 범주`.
+10. Check the coverage buckets in the `Discovery recall contract`. Do not claim completion for a failed or skipped bucket; record material gaps and retry obligations.
+11. After source verification, grade relevance and importance. Route any item with either score `하` to `기타 항목`; do not silently discard credible mild signals.
+12. For any non-Samsung, non-regulation product/platform/service item graded both `관련성: 상` and `중요도: 상`, perform the `Strategic Intent for Top Items` research pass. Keep the Samsung and AI-regulation exceptions unchanged.
+13. Write the report in Korean with item-level sources. Use `해당 없음` only after the corresponding discovery bucket was completed.
+14. Run `scripts/validate_report_format.ps1` and `scripts/validate_report_images.ps1 -TreatWarningsAsErrors` against the generated daily report and `new_features/latest.md`; fix every format error, broken image URL, low-resolution URL, and suspicious logo/social-card warning before stopping.
+15. In the final automated response, emit the `COVERAGE_HANDOFF_V1` block with every stable bucket's attempt window and `last_completed_end_kst`, failures, `watch` and `permanent` entities, the future event calendar, and active event windows. A missing sentinel, required stable ID, or closing line means the automated task is incomplete and must be corrected before finalizing. Stop after updating and validating local markdown files; do not commit or push because Git operations are handled by the wrapper.

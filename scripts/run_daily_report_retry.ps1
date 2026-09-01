@@ -43,7 +43,7 @@ function Test-TodaysRunSucceeded {
     foreach ($log in $todayLogs) {
         $text = Get-Content -Raw -Encoding UTF8 -Path $log.FullName
         $codexSucceeded = $text -match "Finished with exit code 0"
-        $validated = $text -match "Report format validation passed"
+        $validated = $text -match "Coverage handoff validation passed" -and $text -match "Report format validation passed"
         $published = $text -match "Publish completed\." -or $text -match "No report changes to publish\."
         if ($codexSucceeded -and $validated -and $published) {
             Write-RetryLog ("[{0}] Found successful run: {1}" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss K"), $log.Name)
